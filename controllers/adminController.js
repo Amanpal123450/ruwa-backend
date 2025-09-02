@@ -57,7 +57,7 @@ exports.updateProfile = async (req, res) => {
 };
 exports.createEmployee = async (req, res) => {
   try {
-    const { name, phone, password, employeeId, email, joinDate, department, position, address } = req.body;
+    const { name, phone, password, employeeId, email,  department, position, address } = req.body;
 
     if (!name || !phone || !password || !employeeId || !email  || !department || !position || !address) {
       return res.status(400).json({ message: "All fields are required" });
