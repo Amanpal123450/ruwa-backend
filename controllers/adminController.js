@@ -105,6 +105,7 @@ Here are your login credentials:
 
 Employee ID: ${employeeId}
 Password: ${password}
+Mobile: ${phone}
 
 Please keep this information secure.
 
