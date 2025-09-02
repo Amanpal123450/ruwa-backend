@@ -1,5 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../model/user");
+const { sendEmail } = require("../utils/sendEmail");
+require('dotenv').config();
 
 // Get Profile
 
@@ -55,12 +57,9 @@ exports.updateProfile = async (req, res) => {
 };
 exports.createEmployee = async (req, res) => {
   try {
-    // Ensure only Admin can create employees
-   
+    const { name, phone, password, employeeId, email, joinDate, department, position, address } = req.body;
 
-    const { name, phone, password, employeeId, email ,joinDate,department,position,address} = req.body;
-
-    if (!name || !phone || !password || !employeeId || !email|| !joinDate || !department || !position || !address) {
+    if (!name || !phone || !password || !employeeId || !email  || !department || !position || !address) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -88,17 +87,36 @@ exports.createEmployee = async (req, res) => {
       employeeId,
       email,
       verified: true,
-      joinDate,
+      joinDate:Date.now(),
       department,
       address,
-      position
+      position,
     });
 
-    await newEmployee.save();
+   
+       
+    // ✅ Send email with Employee ID and Password
+    const subject = "Your Employee Account Details";
+    const message = `
+Hello ${name},
 
+Your employee account has been created successfully. 
+Here are your login credentials:
+
+Employee ID: ${employeeId}
+Password: ${password}
+
+Please keep this information secure.
+
+- HR Team
+`;
+
+  await sendEmail(email, subject, message);
+
+ await newEmployee.save();
     res.status(201).json({
-      message: "Employee created successfully. Pending admin approval.",
-      employee: newEmployee
+      message: "Employee created successfully and credentials sent via email.",
+      employee: newEmployee,
     });
   } catch (error) {
     console.error(error);

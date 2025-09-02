@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, unique: true, required: true },
   password: String,
   aadhar: { type: String, unique: true },
-  email: { type: String, unique: true, sparse: true }, // for admins/employees
+  userId:{type:Number,unique:true},
+  email: { type: String, sparse: true }, // for admins/employees
   employeeId: { type: String, unique: true, sparse: true }, // for employees
   role: {
     type: String,

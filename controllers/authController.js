@@ -4,8 +4,8 @@ const { generateToken } = require("../utils/jwt");
 
 // REGISTER
 exports.register = async (req, res) => {
-  const { name, phone, password, aadhar } = req.body;
-  if (!name || !phone || !password  || !aadhar) {
+  const { name, phone, password, aadhar,email } = req.body;
+  if (!name || !phone || !password  || !aadhar || !email) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -13,15 +13,15 @@ exports.register = async (req, res) => {
   if (user) return res.status(400).json({ message: "User already exists" });
 
   const hashed = await bcrypt.hash(password, 10);
-  user = new User({ name, phone, password: hashed, role:"USER",aadhar });
+  user = new User({ name, phone, password: hashed, role:"USER",aadhar,email });
   await user.save();
 
   const token = generateToken(user);
   res.json({ message: "Registered", token, role: user.role });
 };
  exports.adminRegister = async (req, res) => {
-  const { name, phone, password } = req.body;
-  if (!name || !phone || !password  ) {
+  const { name, phone, password,email } = req.body;
+  if (!name || !phone || !password ,!email ) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
   if (user) return res.status(400).json({ message: "User already exists" });
 
   const hashed = await bcrypt.hash(password, 10);
-  user = new User({ name, phone, password: hashed, role:"ADMIN" });
+  user = new User({ name, phone,email, password: hashed, role:"ADMIN" ,userId:Date.now() + Math.floor(Math.random() * 1000)});
   await user.save();
 
   const token = generateToken(user);

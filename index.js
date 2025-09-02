@@ -2,6 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const { cloudinaryConnect } = require('./config/cloudinary'); // add this
+
+// Configure Cloudinary
+cloudinaryConnect();
+
+
 const { connectDB } = require('./connection');
 
 const authRoutes = require("./routes/authRoutes");
@@ -18,6 +24,11 @@ const adminRoutes = require("./routes/adminRoutes");
 const dashBoardRoutes=require("./routes/dashBoardRoutes")
 const profileRoutes=require("./routes/profileRoutes")
 const attendanceRoutes=require("./routes/attendanceRoutes")
+const cookieParser = require("cookie-parser");
+const fileUpload = require("express-fileupload");
+
+
+
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -33,12 +44,19 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
+// app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp",
+  limits: { fileSize: 10 * 1024 * 1024 }, // max 10MB per file
+  abortOnLimit: true,
+}));
 
-// DB Connection
+
 connectDB();
 
-// Routes
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
 // app.use("/api/users", userRoutes);
