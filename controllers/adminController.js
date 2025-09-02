@@ -124,3 +124,18 @@ Please keep this information secure.
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+exports.deleteEmployee = async (req, res) => {
+  try {
+    const employeeId = req.params.id;     
+    const deleted = await User.findByIdAndDelete(employeeId);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Employee Not Found" });
+    } 
+    return res.status(200).json({ message: "Employee Deleted Successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }         
+};
