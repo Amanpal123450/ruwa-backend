@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema({
     enum: ["USER", "ADMIN", "EMPLOYEE"],
     default: "USER"
   },
+  DOB:{type:Date},
+  status:{type:String},
+  purpose:{type:String},
  appliedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   isVerified: { type: Boolean, default: true },

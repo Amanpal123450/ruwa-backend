@@ -31,11 +31,6 @@ router.post(
   "/employee/apply",
   auth,
   authorizeRole("EMPLOYEE"),
-  upload.fields([
-    { name: "idProof", maxCount: 1 },
-    { name: "qualificationCertificate", maxCount: 1 },
-    { name: "financialStatement", maxCount: 1 }
-  ]),
   employeeApply
 );
 

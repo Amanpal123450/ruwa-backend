@@ -1,4 +1,5 @@
 const ApplyInsurance = require("../model/applyInsurance");
+const { uploadToCloudinary } = require("../utils/imageUploader");
 
 // Common apply logic
 const buildInsuranceApplication = async (req, res, forUserId) => {
@@ -9,6 +10,8 @@ const buildInsuranceApplication = async (req, res, forUserId) => {
       aadhaarNumber, address, state, district,
       pincode, insuranceType
     } = req.body;
+
+    const {id_proof,passport_photo,medical_documents,income_certificate} = req.files || {};
      const existing=await ApplyInsurance.findOne({aadhaarNumber})
      if(existing){
       return res.status(400).json({message:"Already Applied For Insurance Please Wait For Admin"})
@@ -27,11 +30,52 @@ const buildInsuranceApplication = async (req, res, forUserId) => {
       insuranceType,
       appliedBy: userId,
       forUser: forUserId,
-      id_proof: req.files?.id_proof?.[0]?.buffer,
-      passport_photo: req.files?.passport_photo?.[0]?.buffer,
-      medical_documents: req.files?.medical_documents?.[0]?.buffer,
-      income_certificate: req.files?.income_certificate?.[0]?.buffer,
+      // id_proof: req.files?.id_proof?.[0]?.buffer,
+      // passport_photo: req.files?.passport_photo?.[0]?.buffer,
+      // medical_documents: req.files?.medical_documents?.[0]?.buffer,
+      // income_certificate: req.files?.income_certificate?.[0]?.buffer,
     });
+
+    if (id_proof) {
+          const image = await uploadToCloudinary(
+            id_proof,
+            process.env.FOLDER_NAME,
+            1000,
+            1000
+          );
+          app.id_proof = image.secure_url;
+        }
+
+         if (passport_photo) {
+          const image = await uploadToCloudinary(
+            passport_photo,
+            process.env.FOLDER_NAME,
+            1000,
+            1000
+          );
+          app.passport_photo = image.secure_url;
+        }
+
+         if (medical_documents) {
+          const image = await uploadToCloudinary(
+            medical_documents,
+            process.env.FOLDER_NAME,
+            1000,
+            1000
+          );
+          app.medical_documents = image.secure_url;
+        }
+
+         if (income_certificate) {
+          const image = await uploadToCloudinary(
+            income_certificate,
+            process.env.FOLDER_NAME,
+            1000,
+            1000
+          );
+          app.income_certificate = image.secure_url;
+        }
+
 
     await app.save();
     res.status(201).json({ message: "Insurance application submitted", app });

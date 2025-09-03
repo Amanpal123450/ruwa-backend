@@ -58,12 +58,10 @@ exports.uploadProfileImage = async (req, res) => {
       { profile_pic: result.secure_url },
       { new: true }
     );
-    // employee.profile_pic= result.secure_url 
 
     if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
     }
-    employee.save();
 
     res.status(200).json({ url: result.secure_url, profile: employee });
   } catch (err) {
@@ -73,4 +71,30 @@ exports.uploadProfileImage = async (req, res) => {
 };
 
 
+
+exports.uploadDOB = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { DOB } = req.body; // frontend sends { DOB: "YYYY-MM-DD" }
+
+    if (!DOB) {
+      return res.status(400).json({ message: "DOB is required" });
+    }
+
+    const employee = await Employee.findByIdAndUpdate(
+      userId,
+      { DOB },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.status(200).json({ message: "DOB updated successfully", profile: employee });
+  } catch (err) {
+    console.error("DOB update error:", err);
+    res.status(500).json({ message: "DOB update failed", error: err.message });
+  }
+};
 
