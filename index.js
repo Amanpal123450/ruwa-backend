@@ -24,6 +24,8 @@ const adminRoutes = require("./routes/adminRoutes");
 const dashBoardRoutes=require("./routes/dashBoardRoutes")
 const profileRoutes=require("./routes/profileRoutes")
 const attendanceRoutes=require("./routes/attendanceRoutes")
+const employeeImg=require("./routes/employeeProfileImage")
+const patientRoutes=require("./routes/patientRoutes")
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 
@@ -35,7 +37,7 @@ const PORT = process.env.PORT || 8000;
 
 
 
-const allowedOrigins = ["http://localhost:3000","https://frontend-five-iota-49.vercel.app","https://ruwa-india-admin.vercel.app"];
+const allowedOrigins = ["http://localhost:3000","http://localhost:3001","https://frontend-five-iota-49.vercel.app","https://ruwa-india-admin.vercel.app"];
 
 app.use(cors({
   origin: allowedOrigins,
@@ -70,6 +72,8 @@ app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin",dashBoardRoutes)
 app.use("/api/u",profileRoutes)
+app.use("/api/uu",employeeImg)
 app.use("/api/attendance",attendanceRoutes)
+app.use("/api/employee",patientRoutes)
 // Start server
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
