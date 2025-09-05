@@ -5,11 +5,28 @@ const AmbulanceBooking = require("../model/ambulanceBooking");
 const ApplyInsuranceApplication = require("../model/applyInsurance");
 const JanArogyaApplication = require("../model/janArogyaApplication");
 const JanArogyaApply = require("../model/janArogyaApply");
+const moment = require("moment"); // for date filtering
+const patient=require("../model/patient")
 exports.getEmployeeProfile = async (req, res) => {
   try {
     // req.user.id comes from auth middleware after verifying JWT
     const employeeId = req.user.id;
-
+    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId });
+    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId });
+    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId });
+    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId });
+    const totalServicesApplied =
+      ambulance.length +
+      insurance.length +
+      janArogya.length +
+      janArogyaApply.length;
+        const pendingApplications =
+      ambulance.filter(a => a.status === "APPROVED").length +
+      insurance.filter(i => i.status === "APPROVED").length +
+      janArogya.filter(j => j.status === "APPROVED").length +
+      janArogyaApply.filter(j => j.status === "APPROVED").length;
+const approvalRate=pendingApplications/totalServicesApplied*100
+const totalApplications = await patient.countDocuments();
     const employee = await User.findById(employeeId).select("-password");
     if (!employee || employee.role !== "EMPLOYEE") {
       return res.status(404).json({ message: "Employee not found" });
@@ -18,6 +35,9 @@ exports.getEmployeeProfile = async (req, res) => {
     res.status(200).json({
       message: "Employee profile fetched successfully",
       profile: employee,
+      totalApplications,
+      totalServicesApplied,
+      approvalRate
     });
   } catch (error) {
     console.error("Error fetching employee profile:", error);
@@ -77,4 +97,48 @@ exports.getEmployeeAppliedUsers = async (req, res) => {
 };
 
 
+exports.getEmployeeDashboard = async (req, res) => {
+  try {
+    const employeeId = req.user._id;
 
+    // Today’s start and end time
+    const startOfDay = moment().startOf("day").toDate();
+    const endOfDay = moment().endOf("day").toDate();
+
+    // Fetch all applications by employee
+    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId });
+    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId });
+    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId });
+    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId });
+   
+    // 1️⃣ Total applications applied
+    const totalApplications = await patient.countDocuments();
+      
+
+    // 2️⃣ Applications with status "PENDING"
+    const pendingApplications =
+      ambulance.filter(a => a.status === "PENDING").length +
+      insurance.filter(i => i.status === "PENDING").length +
+      janArogya.filter(j => j.status === "PENDING").length +
+      janArogyaApply.filter(j => j.status === "PENDING").length;
+
+    // 3️⃣ Users applied today (count only)
+    const todayAppliedCount =
+      ambulance.filter(a => a.createdAt >= startOfDay && a.createdAt <= endOfDay).length +
+      insurance.filter(i => i.createdAt >= startOfDay && i.createdAt <= endOfDay).length +
+      janArogya.filter(j => j.createdAt >= startOfDay && j.createdAt <= endOfDay).length +
+      janArogyaApply.filter(j => j.createdAt >= startOfDay && j.createdAt <= endOfDay).length;
+
+    res.json({
+      success: true,
+      dashboard: {
+        totalApplications,
+        pendingApplications,
+        todayAppliedCount, // ✅ only count
+      },
+    });
+  } catch (err) {
+    console.error("Error in getEmployeeDashboard:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
