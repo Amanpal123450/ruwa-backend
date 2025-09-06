@@ -37,7 +37,7 @@ const PORT = process.env.PORT || 8000;
 
 
 
-const allowedOrigins = ["http://localhost:3000","http://localhost:3001","https://frontend-five-iota-49.vercel.app","https://ruwa-india-admin.vercel.app","https://ruwa-user-employee-frontend.vercel.app"];
+const allowedOrigins = ["http://localhost:3000","http://localhost:3001","https://ruwa-india-admin.vercel.app","https://ruwa-user-employee-frontend.vercel.app"];
 
 app.use(cors({
   origin: allowedOrigins,
