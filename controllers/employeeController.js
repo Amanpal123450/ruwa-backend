@@ -142,3 +142,54 @@ exports.getEmployeeDashboard = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// controllers/employeeController.jsF
+
+exports.getEmployeeServiceUsers = async (req, res) => {
+  try {
+    const employeeId = req.user.id;
+    const { service } = req.query; // frontend sends ?service=insurance
+
+    let applications = [];
+
+    switch (service) {
+      case "ambulance":
+        applications = await AmbulanceBooking.find({ appliedBy: employeeId })
+          .populate("forUser", "name phone email");
+        break;
+
+      case "insurance":
+        applications = await ApplyInsuranceApplication.find({ appliedBy: employeeId })
+          .populate("forUser", "name phone email");
+        break;
+
+      case "janArogyaApplication":
+        applications = await JanArogyaApplication.find({ appliedBy: employeeId })
+          .populate("forUser", "name phone email");
+        break;
+
+      case "janArogyaApply":
+        applications = await JanArogyaApply.find({ appliedBy: employeeId })
+          .populate("forUser", "name phone email");
+        break;
+
+      default:
+        return res.status(400).json({ success: false, message: "Invalid service type" });
+    }
+
+    // format users for frontend
+    const appliedUsers = applications.map(app => ({
+      name: app.name || app.fullName || app.forUser?.name,
+      email: app.email || app.forUser?.email,
+      phone: app.phone || app.forUser?.phone,
+      status: app.status,
+      service,
+      createdAt: app.createdAt,
+    }));
+
+    res.json({ success: true, service, appliedUsers });
+  } catch (err) {
+    console.error("Error in getEmployeeServiceUsers:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

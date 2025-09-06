@@ -1,6 +1,6 @@
 // routes/employeeRoutes.js
 const express = require("express");
-const { getEmployeeProfile, getEmployeeAppliedUsers, getEmployeeDashboard } = require("../controllers/employeeController");
+const { getEmployeeProfile, getEmployeeAppliedUsers, getEmployeeDashboard, getEmployeeServiceUsers } = require("../controllers/employeeController");
 
 const { auth,authorizeRole } = require("../middlewares/auth");
 
@@ -15,6 +15,6 @@ router.get(
 );
 router.get("/applied-by-me",auth,authorizeRole("EMPLOYEE"),getEmployeeAppliedUsers)
 router.get("/dash",auth,authorizeRole("EMPLOYEE"),getEmployeeDashboard)
-
+router.get("/service-users", auth,authorizeRole("EMPLOYEE"), getEmployeeServiceUsers);
 
 module.exports = router
