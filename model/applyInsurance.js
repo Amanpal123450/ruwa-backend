@@ -21,7 +21,7 @@ const applyInsuranceSchema = new mongoose.Schema({
   income_certificate: String,
 
   appliedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  // forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
   status: {
     type: String,

@@ -149,28 +149,28 @@ exports.getEmployeeServiceUsers = async (req, res) => {
   try {
     const employeeId = req.user.id;
     const { service } = req.query; // frontend sends ?service=insurance
-
+  console.log("Service requested:", service);
     let applications = [];
 
     switch (service) {
       case "ambulance":
         applications = await AmbulanceBooking.find({ appliedBy: employeeId })
-          .populate( "name phone email _id");
+          .populate( "fullName phone email _id");
         break;
 
       case "insurance":
         applications = await ApplyInsuranceApplication.find({ appliedBy: employeeId })
-          .populate( "name phone email _id");
+          .populate( "fullName phone email _id");
         break;
 
       case "janArogyaApplication":
         applications = await JanArogyaApplication.find({ appliedBy: employeeId })
-          .populate( "name phone email _id");
+          .populate( "name mobile _id");
         break;
 
       case "janArogyaApply":
         applications = await JanArogyaApply.find({ appliedBy: employeeId })
-          .populate( "name phone email _id");
+          .populate( "name phone _id");
         break;
 
       default:
@@ -179,9 +179,9 @@ exports.getEmployeeServiceUsers = async (req, res) => {
 
     // format users for frontend
     const appliedUsers = applications.map(app => ({
-      name: app.name , 
+      name: app.name || app.fullName, 
       email: app.email ,
-      phone: app.phone ,
+      phone: app.mobile || app.phone,
       status: app.status,
       service,
       createdAt: app.createdAt,

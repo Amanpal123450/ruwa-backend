@@ -102,8 +102,9 @@ exports.checkJanarogya = async (req, res) => {
 
 // USER: Get own applications
 exports.getUserApplication = async (req, res) => {
+  const id =req.user.id
   try {
-    const apps = await JanArogyaApplication.find({ forUser: req.user.id });
+    const apps = await JanArogyaApplication.find({  id });
     res.json(apps);
   } catch (err) {
     res
@@ -161,10 +162,10 @@ exports.updateApplicationStatus = async (req, res) => {
 
 exports.withdrawApplication = async (req, res) => {
   try {
-    const id = req.params.id; // this is the forUser's id
+    const phone = req.body; // this is the forUser's id
 
     const app = await JanArogyaApplication.findOneAndUpdate(
-      { forUser: id },               // filter by forUser
+      { mobile: phone },               // filter by forUser
       { status: "WITHDRAWN" },       // update
       { new: true }                  // return updated doc
     );

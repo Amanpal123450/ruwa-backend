@@ -50,7 +50,8 @@ exports.bookAmbulanceForUser = async (req, res) => {
 // USER: Get own bookings
 exports.getUserBookings = async (req, res) => {
   try {
-    const bookings = await AmbulanceBooking.find({ forUser: req.user.id });
+    const phone = req.body.phone;
+    const bookings = await AmbulanceBooking.find({ phone});
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ message: "Error fetching bookings", error: err.message });

@@ -24,7 +24,7 @@ const janArogyaApplySchema = new mongoose.Schema({
     default: "PENDING"},
 
   appliedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    // forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model("JanArogyaApply", janArogyaApplySchema);

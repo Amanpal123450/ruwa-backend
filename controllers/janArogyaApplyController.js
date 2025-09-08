@@ -134,10 +134,10 @@ exports.updateJanArogyaStatus = async (req, res) => {
 };
 exports.employeeupdateJanArogyaStatus = async (req, res) => {
   try {
-    const id = req.params.id; // this is the forUser's id
-
+    const {phone }= req.body; // this is the forUser's id
+  console.log(phone)
     const app = await JanArogyaApply.findOneAndUpdate(
-      { forUser: id },               // filter by forUser
+      { phone: phone },               // filter by forUser
       { status: "WITHDRAWN" },       // update
       { new: true }                  // return updated doc
     );

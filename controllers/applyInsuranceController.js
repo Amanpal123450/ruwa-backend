@@ -146,7 +146,7 @@ exports.updateInsuranceApplicationStatus = async (req, res) => {
 
 exports.withdrawInsuranceApplication = async (req, res) => {
   try {
-    const aadhaarNumber = req.params.id; // this is the forUser's id
+    const aadhaarNumber = req.body; // this is the forUser's id
 
     const app = await ApplyInsurance.findOneAndUpdate(
       { aadhaarNumber: aadhaarNumber },               // filter by forUser
