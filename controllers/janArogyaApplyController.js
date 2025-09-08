@@ -3,7 +3,7 @@ const JanArogyaApply = require("../model/janArogyaApply");
 const { uploadToCloudinary } = require("../utils/imageUploader");
 
 // Internal builder (for self or on behalf)
-const buildApplication = async (req, res, forUserId) => {
+const buildApplication = async (req, res) => {
   try {
     const { 
       name, aadhaar, phone, address, businessType, investmentCapacity,
@@ -11,7 +11,7 @@ const buildApplication = async (req, res, forUserId) => {
     } = req.body;
 
     const {idProof,qualificationCertificate,financialStatement} = req.files || {};
-     const existing=await janArogyaApply.findOne({forUserId})
+     const existing=await janArogyaApply.findOne({aadhaar})
      if(existing){
       return res.status(400).json({message:"User Already Applied"})
      }
@@ -32,7 +32,7 @@ const buildApplication = async (req, res, forUserId) => {
       // financialStatement: req.body.financialStatement || "",
 
       appliedBy: req.user._id,    // who submitted (employee or user)
-      forUser: forUserId          // who it is for
+      // forUser: forUserId          // who it is for
     });
 
     if (idProof) {
@@ -75,20 +75,19 @@ const buildApplication = async (req, res, forUserId) => {
 };
 
 // USER applies for themselves
-exports.userApply = (req, res) => buildApplication(req, res, req.user._id);
+exports.userApply = (req, res) => buildApplication(req, res);
 
 // EMPLOYEE applies on behalf of a user
 exports.employeeApply = (req, res) => {
-  if (!req.body.forUserId) {
-    return res.status(400).json({ message: "forUserId is required when employee applies" });
-  }
-  return buildApplication(req, res, req.body.forUserId);
+  
+  return buildApplication(req, res);
 };
 
 // USER: Get own applications (applications for them)
 exports.getMyApplications = async (req, res) => {
   try {
-    const apps = await JanArogyaApply.find({ forUser: req.user._id })
+    const aadhaar = req.body.aadhar;
+    const apps = await JanArogyaApply.find({ aadhaar })
       .populate("appliedBy", "name email role");
     res.json(apps);
   } catch (err) {

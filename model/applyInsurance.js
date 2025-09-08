@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const unirest = require("unirest");
 
 const applyInsuranceSchema = new mongoose.Schema({
   fullName: String,
@@ -7,7 +8,7 @@ const applyInsuranceSchema = new mongoose.Schema({
   phone:String,
   email: String,
   phoneNumber: String,
-  aadhaarNumber: String,
+  aadhaarNumber: {type:String,unique:true},
   address: String,
   state: String,
   district: String,

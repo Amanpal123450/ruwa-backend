@@ -56,11 +56,11 @@ exports.getEmployeeAppliedUsers = async (req, res) => {
   try {
     const employeeId = req.user._id;
 
-    // Fetch all applications with populated forUser
-    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId }).populate("forUser", "name phone email");
-    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId }).populate("forUser", "name phone email");
-    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId }).populate("forUser", "name phone email");
-    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId }).populate("forUser", "name phone email");
+    // Fetch all applications with populated 
+    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId }).populate( "name phone email");
+    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId }).populate( "name phone email");
+    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId }).populate( "name phone email");
+    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId }).populate( "name phone email");
 
     // Flatten into desired format
     const appliedUsers = [
@@ -155,22 +155,22 @@ exports.getEmployeeServiceUsers = async (req, res) => {
     switch (service) {
       case "ambulance":
         applications = await AmbulanceBooking.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email _id");
+          .populate( "name phone email _id");
         break;
 
       case "insurance":
         applications = await ApplyInsuranceApplication.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email _id");
+          .populate( "name phone email _id");
         break;
 
       case "janArogyaApplication":
         applications = await JanArogyaApplication.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email _id");
+          .populate( "name phone email _id");
         break;
 
       case "janArogyaApply":
         applications = await JanArogyaApply.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email _id");
+          .populate( "name phone email _id");
         break;
 
       default:
@@ -179,13 +179,13 @@ exports.getEmployeeServiceUsers = async (req, res) => {
 
     // format users for frontend
     const appliedUsers = applications.map(app => ({
-      name: app.name || app.fullName || app.forUser?.name,
-      email: app.email || app.forUser?.email,
-      phone: app.phone || app.forUser?.phone,
+      name: app.name , 
+      email: app.email ,
+      phone: app.phone ,
       status: app.status,
       service,
       createdAt: app.createdAt,
-      id: app.forUser?._id || app._id
+      id:  app._id
     }));
 
     res.json({ success: true, service, appliedUsers });

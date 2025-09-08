@@ -12,7 +12,7 @@ const janArogyaSchema = new mongoose.Schema({
   ration_id: String,               // ration card file
 
   appliedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  // forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
   status: {
     type: String,

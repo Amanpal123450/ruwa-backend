@@ -2,7 +2,7 @@ const { Compressor } = require("mongodb");
 const AmbulanceBooking = require("../model/ambulanceBooking");
 
 // Common booking logic
-const buildBooking = async (req, res, forUserId) => {
+const buildBooking = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -25,7 +25,7 @@ const buildBooking = async (req, res, forUserId) => {
       preferredTime,
       message,
       appliedBy: userId,
-      forUser: forUserId,
+      
     });
 
     await booking.save();
@@ -37,14 +37,14 @@ const buildBooking = async (req, res, forUserId) => {
 
 // USER books for self
 exports.userBookAmbulance = async (req, res) => {
-  return buildBooking(req, res, req.user._id);
+  return buildBooking(req, res);
 };
 
 
 exports.bookAmbulanceForUser = async (req, res) => {
-  const { forUserId } = req.body;
-  if (!forUserId) return res.status(400).json({ message: "forUserId is required" });
-  return buildBooking(req, res, forUserId);
+  // const { forUserId } = req.body;
+  // if (!forUserId) return res.status(400).json({ message: "forUserId is required" });
+  return buildBooking(req, res);
 };
 
 // USER: Get own bookings
@@ -61,7 +61,7 @@ exports.getUserBookings = async (req, res) => {
 exports.getEmployeeBookings = async (req, res) => {
   try {
     const bookings = await AmbulanceBooking.find({ appliedBy: req.user.id })
-      .populate("forUser", "name email");
+      .populate( "name email");
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ message: "Error fetching bookings", error: err.message });
@@ -72,7 +72,7 @@ exports.getEmployeeBookings = async (req, res) => {
 exports.getAllBookings = async (req, res) => {
   try {
     const bookings = await AmbulanceBooking.find()
-      .populate("appliedBy forUser", "name role email");
+      .populate( "name role email");
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ message: "Error fetching all bookings", error: err.message });
@@ -97,10 +97,10 @@ exports.updateBookingStatus = async (req, res) => {
 
 exports.withdrawBooking = async (req, res) => {
   try {
-    const id = req.params.id; // this is the forUser's id
+    const phone = req.params.id; // this is the forUser's id
 
     const app = await AmbulanceBooking.findOneAndUpdate(
-      { forUser: id },               // filter by forUser
+      { phone: phone },               // filter by phone
       { status: "WITHDRAWN" },       // update
       { new: true }                  // return updated doc
     );

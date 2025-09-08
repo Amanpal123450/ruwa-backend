@@ -2,7 +2,7 @@
 const JanArogyaApplication = require("../model/janArogyaApplication");
 const { uploadToCloudinary } = require("../utils/imageUploader");
 
-const buildApplication = async (req, res, forUserId) => {
+const buildApplication = async (req, res) => {
   try {
     const {
       name,
@@ -10,13 +10,11 @@ const buildApplication = async (req, res, forUserId) => {
       mobile,
       state,
       district,
-      forUserId,
     } = req.body;
     const { income_certificate, caste_certificate, ration_id } = req.files || {};
 
 
-    if (!forUserId)
-      return res.status(400).json({ message: "forUserId is required" });
+    
 
     const existing = await JanArogyaApplication.findOne({ aadhar });
     if (existing) return res.status(400).json({ message: "Already applied." });
@@ -27,8 +25,8 @@ const buildApplication = async (req, res, forUserId) => {
       mobile,
       state,
       district,
-      appliedBy: req.user._id,
-      forUser: forUserId,
+      appliedBy: req.user.id,
+      
     });
 
     if (income_certificate) {
@@ -68,19 +66,17 @@ const buildApplication = async (req, res, forUserId) => {
 
 // USER applies for self
 exports.userApplyJanarogya = (req, res) =>
-  buildApplication(req, res, req.user.id);
+  buildApplication(req, res);
 
 // EMPLOYEE applies for others
 exports.applyJanarogya = async (req, res) => {
   console.log("REQ BODY:", req.body);
   console.log("REQ FILES:", req.files);
 
-  const forUserId = req.body.forUserId || req.body.foruserid;
-  if (!forUserId) {
-    return res.status(400).json({ message: "forUserId is required" });
-  }
+  
+  
 
-  return buildApplication(req, res, forUserId);
+  return buildApplication(req, res);
 };
 
 exports.checkJanarogya = async (req, res) => {

@@ -2,7 +2,7 @@ const ApplyInsurance = require("../model/applyInsurance");
 const { uploadToCloudinary } = require("../utils/imageUploader");
 
 // Common apply logic
-const buildInsuranceApplication = async (req, res, forUserId) => {
+const buildInsuranceApplication = async (req, res) => {
   try {
     const userId = req.user._id;
     const {
@@ -29,7 +29,7 @@ const buildInsuranceApplication = async (req, res, forUserId) => {
       pincode,
       insuranceType,
       appliedBy: userId,
-      forUser: forUserId,
+      // forUser: forUserId,
       // id_proof: req.files?.id_proof?.[0]?.buffer,
       // passport_photo: req.files?.passport_photo?.[0]?.buffer,
       // medical_documents: req.files?.medical_documents?.[0]?.buffer,
@@ -86,20 +86,21 @@ const buildInsuranceApplication = async (req, res, forUserId) => {
 
 // USER applies for self
 exports.userApplyInsurance = async (req, res) => {
-  return buildInsuranceApplication(req, res, req.user.id);
+  return buildInsuranceApplication(req, res);
 };
 
 // EMPLOYEE applies for others
 exports.applyInsurance = async (req, res) => {
-  const { forUserId } = req.body;
-  if (!forUserId) return res.status(400).json({ message: "forUserId is required" });
-  return buildInsuranceApplication(req, res, forUserId);
+  // const { forUserId } = req.body;
+  // if (!forUserId) return res.status(400).json({ message: "forUserId is required" });
+  return buildInsuranceApplication(req, res);
 };
 
 // USER: Get own applications
 exports.getUserInsuranceApplications = async (req, res) => {
   try {
-    const apps = await ApplyInsurance.find({ forUser: req.user.id });
+    const aadhaar = req.body.aadhar;
+    const apps = await ApplyInsurance.find({ aadhaar });
     res.json(apps);
   } catch (err) {
     res.status(500).json({ message: "Error fetching user insurance applications", error: err.message });
@@ -110,7 +111,7 @@ exports.getUserInsuranceApplications = async (req, res) => {
 exports.getEmployeeInsuranceApplications = async (req, res) => {
   try {
     const apps = await ApplyInsurance.find({ appliedBy: req.user.id })
-      .populate("forUser", "name email");
+      .populate( "name email");
     res.json(apps);
   } catch (err) {
     res.status(500).json({ message: "Error fetching insurance applications", error: err.message });
@@ -121,7 +122,7 @@ exports.getEmployeeInsuranceApplications = async (req, res) => {
 exports.getAllInsuranceApplications = async (req, res) => {
   try {
     const apps = await ApplyInsurance.find()
-      .populate("appliedBy forUser", "name role email");
+      .populate( "name role email");
     res.json(apps);
   } catch (err) {
     res.status(500).json({ message: "Error fetching all insurance applications", error: err.message });
@@ -145,10 +146,10 @@ exports.updateInsuranceApplicationStatus = async (req, res) => {
 
 exports.withdrawInsuranceApplication = async (req, res) => {
   try {
-    const id = req.params.id; // this is the forUser's id
+    const aadhaarNumber = req.params.id; // this is the forUser's id
 
     const app = await ApplyInsurance.findOneAndUpdate(
-      { forUser: id },               // filter by forUser
+      { aadhaarNumber: aadhaarNumber },               // filter by forUser
       { status: "WITHDRAWN" },       // update
       { new: true }                  // return updated doc
     );
