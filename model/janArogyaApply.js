@@ -18,7 +18,10 @@ const janArogyaApplySchema = new mongoose.Schema({
   financialStatement: { type: String },
 
   // Status for admin
-  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+ status: {
+    type: String,
+    enum: ["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"],
+    default: "PENDING"},
 
   appliedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     forUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },

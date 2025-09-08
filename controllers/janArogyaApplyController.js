@@ -100,7 +100,7 @@ exports.getMyApplications = async (req, res) => {
 exports.getEmployeeApplications = async (req, res) => {
   try {
     const apps = await JanArogyaApply.find({ appliedBy: req.user._id })
-      .populate("forUser", "name email");
+      .populate("forUser", "name email role");
     res.json(apps);
   } catch (err) {
     res.status(500).json({ message: "Error fetching employee applications", error: err.message });
@@ -131,5 +131,27 @@ exports.updateJanArogyaStatus = async (req, res) => {
     res.json({ message: "Status updated successfully", app });
   } catch (err) {
     res.status(500).json({ message: "Error updating status", error: err.message });
+  }
+};
+exports.employeeupdateJanArogyaStatus = async (req, res) => {
+  try {
+    const id = req.params.id; // this is the forUser's id
+
+    const app = await JanArogyaApply.findOneAndUpdate(
+      { forUser: id },               // filter by forUser
+      { status: "WITHDRAWN" },       // update
+      { new: true }                  // return updated doc
+    );
+
+    if (!app) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    res.json({ message: "Status updated successfully", app });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error updating status",
+      error: err.message
+    });
   }
 };

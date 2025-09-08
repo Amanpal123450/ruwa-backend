@@ -51,10 +51,10 @@ router.get(
   insCtrl.getEmployeeInsuranceApplications
 );
 
-router.patch(
-  "/employee/withdraw/:id",
+router.put(
+  "/withdrawn/:id",
   auth,
-  authorizeRole("EMPLOYEE", "USER"),
+  authorizeRole("EMPLOYEE"),
   insCtrl.withdrawInsuranceApplication
 );
 

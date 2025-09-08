@@ -142,24 +142,26 @@ exports.updateInsuranceApplicationStatus = async (req, res) => {
 };
 
 // EMPLOYEE/USER: Withdraw application
+
 exports.withdrawInsuranceApplication = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const app = await ApplyInsurance.findById(id);
-    if (!app) return res.status(404).json({ message: "Application not found" });
+    const id = req.params.id; // this is the forUser's id
 
-    const isOwner = String(app.appliedBy) === req.user.id;
-    const isForUser = String(app.forUser) === req.user.id;
+    const app = await ApplyInsurance.findOneAndUpdate(
+      { forUser: id },               // filter by forUser
+      { status: "WITHDRAWN" },       // update
+      { new: true }                  // return updated doc
+    );
 
-    if (!isOwner && !isForUser) {
-      return res.status(403).json({ message: "Not authorized to withdraw this insurance application" });
+    if (!app) {
+      return res.status(404).json({ message: "Application not found" });
     }
 
-    app.status = "WITHDRAWN";
-    await app.save();
-    res.json({ message: "Insurance application withdrawn", app });
+    res.json({ message: "Status updated successfully", app });
   } catch (err) {
-    res.status(500).json({ message: "Error withdrawing insurance application", error: err.message });
+    res.status(500).json({
+      message: "Error updating status",
+      error: err.message
+    });
   }
 };

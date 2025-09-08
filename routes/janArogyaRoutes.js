@@ -51,10 +51,10 @@ router.get(
   janCtrl.getJanarogyaApplications
 );
 
-router.patch(
-  "/employee/withdraw/:id",
+router.put(
+  "/withdraw/:id",
   auth,
-  authorizeRole("EMPLOYEE", "USER"),
+  authorizeRole("EMPLOYEE"),
   janCtrl.withdrawApplication
 );
 

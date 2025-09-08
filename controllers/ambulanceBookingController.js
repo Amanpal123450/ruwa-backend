@@ -93,25 +93,28 @@ exports.updateBookingStatus = async (req, res) => {
 };
 
 // USER or EMPLOYEE: Withdraw booking
+
+
 exports.withdrawBooking = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const booking = await AmbulanceBooking.findById(id);
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    const id = req.params.id; // this is the forUser's id
 
-    const isOwner = String(booking.appliedBy) === req.user.id;
-    const isForUser = String(booking.forUser) === req.user.id;
+    const app = await AmbulanceBooking.findOneAndUpdate(
+      { forUser: id },               // filter by forUser
+      { status: "WITHDRAWN" },       // update
+      { new: true }                  // return updated doc
+    );
 
-    if (!isOwner && !isForUser) {
-      return res.status(403).json({ message: "Not authorized to withdraw this booking" });
+    if (!app) {
+      return res.status(404).json({ message: "Application not found" });
     }
 
-    booking.status = "WITHDRAWN";
-    await booking.save();
-    res.json({ message: "Booking withdrawn", booking });
+    res.json({ message: "Status updated successfully", app });
   } catch (err) {
-    res.status(500).json({ message: "Error withdrawing booking", error: err.message });
+    res.status(500).json({
+      message: "Error updating status",
+      error: err.message
+    });
   }
 };
 // ADMIN: Delete a booking

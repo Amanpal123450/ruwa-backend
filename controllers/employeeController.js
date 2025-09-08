@@ -155,22 +155,22 @@ exports.getEmployeeServiceUsers = async (req, res) => {
     switch (service) {
       case "ambulance":
         applications = await AmbulanceBooking.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email");
+          .populate("forUser", "name phone email _id");
         break;
 
       case "insurance":
         applications = await ApplyInsuranceApplication.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email");
+          .populate("forUser", "name phone email _id");
         break;
 
       case "janArogyaApplication":
         applications = await JanArogyaApplication.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email");
+          .populate("forUser", "name phone email _id");
         break;
 
       case "janArogyaApply":
         applications = await JanArogyaApply.find({ appliedBy: employeeId })
-          .populate("forUser", "name phone email");
+          .populate("forUser", "name phone email _id");
         break;
 
       default:
@@ -185,6 +185,7 @@ exports.getEmployeeServiceUsers = async (req, res) => {
       status: app.status,
       service,
       createdAt: app.createdAt,
+      id: app.forUser?._id || app._id
     }));
 
     res.json({ success: true, service, appliedUsers });
