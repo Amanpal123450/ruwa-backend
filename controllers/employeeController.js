@@ -57,10 +57,10 @@ exports.getEmployeeAppliedUsers = async (req, res) => {
     const employeeId = req.user._id;
 
     // Fetch all applications with populated 
-    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId }).populate( "name phone email");
-    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId }).populate( "name phone email");
-    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId }).populate( "name phone email");
-    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId }).populate( "name phone email");
+    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId })
+    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId })
+    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId })
+    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId })
 
     // Flatten into desired format
     const appliedUsers = [
@@ -68,24 +68,43 @@ exports.getEmployeeAppliedUsers = async (req, res) => {
         name: a.fullName,
         email: a.email,
         phone: a.phone,
+        status:a.status,
+        hospitalPreference:a.hospitalPreference,
+        appointmentDate:a.appointmentDate,
+        preferredTime:a.preferredTime,
+        submittedAt:a.submittedAt,
         service: "AmbulanceBooking"
       })),
       ...insurance.map(i => ({
         name: i.fullName,
         email: i.email,
-        phone: i.phone,
-        service: "ApplyInsurance"
+        aadhaarNumber:i.aadhaarNumber,
+        district:i.district,
+        dob:i.dob,
+        phone: i.phone || "Not Provided",
+        status:i.status,
+        service: "ApplyInsurance",
+        insuranceType:i.insuranceType
       })),
       ...janArogya.map(j => ({
         name: j.name,
-        email: j.email,
-        phone: j.phone,
+        email: j.email || "Not Provided",
+        phone: j.phone || "Not Provided",
+        state:j.state,
+        district:j.district,
+        status:j.status,
         service: "JanArogyaApplication"
       })),
       ...janArogyaApply.map(j => ({
         name: j.name,
-        email: j.email,
+        email: j.email || "Not Provided",                         
         phone: j.phone,
+        businessType:j.businessType,
+        investmentCapacity:j.investmentCapacity,
+        proposedLocation:j.proposedLocation,
+        franchiseCategory:j.franchiseCategory,
+        category:j.category,
+        status:j.status,
         service: "JanArogyaApply"
       }))
     ];
@@ -194,3 +213,18 @@ exports.getEmployeeServiceUsers = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+exports.getAppliedByMe=async(req,res)=>{
+     try {
+      const employeeId=req.user.id
+      console.log(employeeId)
+
+      const users=await User.find({appliedBy:employeeId});
+      if(!users){
+        return res.status(400).json({message:"No User Found"})
+      }
+      return res.status(200).json({success:true,users})
+     } catch (error) {
+      return res.status(400).json({message:error.message})
+     }
+}

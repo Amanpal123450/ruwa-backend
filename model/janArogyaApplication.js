@@ -6,7 +6,7 @@ const janArogyaSchema = new mongoose.Schema({
   mobile: { type: String, required: true },
   state: { type: String, required: true },
   district: { type: String, required: true },
-
+  email:{type:String},
   income_certificate: String,     // storing file as buffer
   caste_certificate: String,      // optional
   ration_id: String,               // ration card file
