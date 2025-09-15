@@ -1,5 +1,7 @@
 const Employee = require("../model/user"); // Your Employee mongoose model
 const cloudinary = require("../utils/imageUploader"); // Cloudinary setup
+const JanArogyaApplication=require("../model/janArogyaApplication");
+const { default: mongoose } = require("mongoose");
 
 // Get employee profile
 exports.getProfile = async (req, res) => {
@@ -81,17 +83,38 @@ exports.uploadDOB = async (req, res) => {
       return res.status(400).json({ message: "DOB is required" });
     }
 
-    const employee = await Employee.findByIdAndUpdate(
-      userId,
-      { DOB },
-      { new: true, runValidators: true }
-    ).select("-password");
+   // Update DOB in Employee
+const employee = await Employee.findByIdAndUpdate(
+  userId,
+  { DOB },
+  { new: true, runValidators: true }
+).select("-password");
 
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found" });
-    }
+if (!employee) {
+  return res.status(404).json({ message: "Employee not found" });
+}
 
-    res.status(200).json({ message: "DOB updated successfully", profile: employee });
+// Update DOB in JanArogyaApplication (where appliedBy = userId)
+const application = await JanArogyaApplication.findOneAndUpdate(
+  { $or: [
+      { appliedBy: new mongoose.Types.ObjectId(userId) },
+      { forUser: new mongoose.Types.ObjectId(userId) }
+    ]
+  },
+  { DOB },
+  { new: true, runValidators: true }
+);
+
+console.log("fddfdf", application);
+
+console.log("fddfdf",application);
+
+res.status(200).json({
+  message: "DOB updated successfully",
+  profile: employee,
+  application,
+});
+
   } catch (err) {
     console.error("DOB update error:", err);
     res.status(500).json({ message: "DOB update failed", error: err.message });

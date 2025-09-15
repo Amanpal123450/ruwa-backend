@@ -1,5 +1,6 @@
 // const janArogyaApplication = require("../model/janArogyaApplication");
 const JanArogyaApplication = require("../model/janArogyaApplication");
+const user = require("../model/user");
 const { uploadToCloudinary } = require("../utils/imageUploader");
 const sendEmail = require("../utils/sendEmail"); // same utility you use in createEmployee
 const buildApplication = async (req, res) => {
@@ -87,13 +88,17 @@ exports.checkJanarogya = async (req, res) => {
     const application = await JanArogyaApplication.findOne({ userId }).populate(
       "status"
     );
-
+    // console.log("ds",application)
     if (application && application.status == "PENDING") {
       return res.status(200).json({ msg: "USER ALREADY EXISTS" });
     }
-    if (application && application.status == "APPROVED") {
-      return res.status(200).json({ msg: "APPROVED" });
-    }
+   if (application && application.status == "APPROVED") {
+  return res.status(200).json({
+    msg: "APPROVED",
+    application,
+  });
+}
+
     return res.status(404).json({ msg: "USER NOT FOUND" });
   } catch (e) {
     return res.status(400).json({ error: e.message });

@@ -4,6 +4,7 @@ const janArogyaSchema = new mongoose.Schema({
   name: { type: String, required: true },
   aadhar: { type: String, required: true, unique: true },
   mobile: { type: String, required: true },
+  DOB:{type:Date},
   state: { type: String, required: true },
   district: { type: String, required: true },
   email:{type:String},
