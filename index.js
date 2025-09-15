@@ -29,7 +29,7 @@ const io = new Server(server, {
   }
 });
 
-// middleware
+
 app.use(cors({
   origin: ["http://localhost:3000","http://localhost:3001","https://ruwa-india-admin.vercel.app","https://ruwa-user-employee-frontend.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
