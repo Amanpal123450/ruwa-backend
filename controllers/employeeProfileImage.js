@@ -95,19 +95,19 @@ if (!employee) {
 }
 
 // Update DOB in JanArogyaApplication (where appliedBy = userId)
-const application = await JanArogyaApplication.findOneAndUpdate(
-  { $or: [
-      { appliedBy: new mongoose.Types.ObjectId(userId) },
-      { forUser: new mongoose.Types.ObjectId(userId) }
-    ]
-  },
-  { DOB },
-  { new: true, runValidators: true }
-);
+// const application = await JanArogyaApplication.findOneAndUpdate(
+//   { $or: [
+//       { appliedBy: new mongoose.Types.ObjectId(userId) },
+//       { forUser: new mongoose.Types.ObjectId(userId) }
+//     ]
+//   },
+//   { DOB },
+//   { new: true, runValidators: true }
+// );
 
-console.log("fddfdf", application);
+// console.log("fddfdf", application);
 
-console.log("fddfdf",application);
+// console.log("fddfdf",application);
 
 res.status(200).json({
   message: "DOB updated successfully",

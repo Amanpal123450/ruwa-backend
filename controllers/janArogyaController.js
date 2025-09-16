@@ -3,6 +3,7 @@ const JanArogyaApplication = require("../model/janArogyaApplication");
 const user = require("../model/user");
 const { uploadToCloudinary } = require("../utils/imageUploader");
 const sendEmail = require("../utils/sendEmail"); // same utility you use in createEmployee
+const QRCode = require("qrcode");
 const buildApplication = async (req, res) => {
   try {
     const {
@@ -11,8 +12,10 @@ const buildApplication = async (req, res) => {
       mobile,
       state,
       district,
+      DOB,
+      gender
     } = req.body;
-    const { income_certificate, caste_certificate, ration_id } = req.files || {};
+    const { income_certificate, caste_certificate, ration_id,profilePicUser } = req.files || {};
 
 
     
@@ -26,6 +29,8 @@ const buildApplication = async (req, res) => {
       mobile,
       state,
       district,
+      DOB,
+      gender,
       appliedBy: req.user.id,
       
     });
@@ -39,6 +44,17 @@ const buildApplication = async (req, res) => {
       );
       app.income_certificate = image.secure_url;
     }
+  
+     if (profilePicUser) {
+      const image = await uploadToCloudinary(
+        profilePicUser,
+        process.env.FOLDER_NAME,
+        1000,
+        1000
+      );
+      app.profilePicUser = image.secure_url;
+    }
+
     if (caste_certificate) {
       const image = await uploadToCloudinary(
         caste_certificate,
@@ -56,6 +72,24 @@ const buildApplication = async (req, res) => {
         1000
       );
       app.ration_id = image.secure_url;
+    }
+
+     const qrData = {
+      id: app._id,
+      name: app.name,
+      gender: app.gender,
+      DOB: app.DOB,
+      mobile: app.mobile,
+      state: app.state,
+      district: app.district,
+      aadhar: app.aadhar,
+    };
+
+    const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData));
+    if(qrCodeUrl)
+    {
+
+      app.Qr=qrCodeUrl;
     }
     await app.save();
     res.status(201).json({ message: "Application submitted", app });

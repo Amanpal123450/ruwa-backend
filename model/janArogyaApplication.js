@@ -5,8 +5,11 @@ const janArogyaSchema = new mongoose.Schema({
   aadhar: { type: String, required: true, unique: true },
   mobile: { type: String, required: true },
   DOB:{type:Date},
+  gender:{type:String},
+  Qr:{type:String},
   state: { type: String, required: true },
   district: { type: String, required: true },
+  profilePicUser:{ type: String, required: true },
   email:{type:String},
   income_certificate: String,     // storing file as buffer
   caste_certificate: String,      // optional

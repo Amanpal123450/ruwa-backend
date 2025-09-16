@@ -16,11 +16,6 @@ router.post(
   "/user/apply",
   auth,
   authorizeRole("USER"),
-  upload.fields([
-    { name: "income_certificate", maxCount: 1 },
-    { name: "caste_certificate", maxCount: 1 },
-    { name: "ration_id", maxCount: 1 }
-  ]),
   janCtrl.userApplyJanarogya
 );
 

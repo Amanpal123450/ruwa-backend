@@ -36,15 +36,16 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(fileUpload({
   useTempFiles: true,
   tempFileDir: "/tmp",
   limits: { fileSize: 10 * 1024 * 1024 },
   abortOnLimit: true,
 }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
 
 connectDB();
 
