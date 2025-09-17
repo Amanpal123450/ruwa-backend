@@ -102,20 +102,23 @@ exports.applyJanarogya = async (req, res) => {
 
 exports.checkJanarogya = async (req, res) => {
   try {
-    const userId  = req.user.id; // coming from auth middleware
-  // console.log("fff",userId)
-    // If application schema stores user reference as `userId`
-   const application = await JanArogyaApplication.findOne({ appliedBy: userId });
+    const id = req.query.id; // 👈 GET query se aayega
+    const userId = req.user.id;
 
-    // console.log("ds",application)
-    if (application && application.status == "PENDING") {
+    let application;
+
+    if (id) {
+      application = await JanArogyaApplication.findById(id);
+    } else {
+      application = await JanArogyaApplication.findOne({ appliedBy: userId });
+    }
+
+    if (application && application.status === "PENDING") {
       return res.status(200).json({ msg: "USER ALREADY EXISTS" });
     }
-    if (application && application.status == "APPROVED") {
-      return res.status(200).json({
-        msg: "APPROVED",
-        application,
-      });
+
+    if (application && application.status === "APPROVED") {
+      return res.status(200).json({ msg: "APPROVED", application });
     }
 
     return res.status(404).json({ msg: "USER NOT FOUND" });
@@ -123,6 +126,8 @@ exports.checkJanarogya = async (req, res) => {
     return res.status(400).json({ error: e.message });
   }
 };
+
+
 
 // USER: Get own applications
 exports.getUserApplication = async (req, res) => {
