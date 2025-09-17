@@ -15,6 +15,7 @@ exports.sendEmail = async (to, subject, text) => {
       to,
       subject,
       text,
+      html: text || "", 
     });
     console.log("✅ Email sent to:", to);
   } catch (error) {

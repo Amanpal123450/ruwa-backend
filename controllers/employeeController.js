@@ -184,7 +184,7 @@ exports.getEmployeeServiceUsers = async (req, res) => {
 
       case "janArogyaApplication":
         applications = await JanArogyaApplication.find({ appliedBy: employeeId })
-          .populate( "name mobile _id");
+          
         break;
 
       case "janArogyaApply":

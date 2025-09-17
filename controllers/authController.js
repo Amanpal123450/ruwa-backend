@@ -4,10 +4,13 @@ const { generateToken } = require("../utils/jwt");
 
 // REGISTER
 exports.register = async (req, res) => {
+
   const { name, phone, password, aadhar,email } = req.body;
-  if (!name || !phone || !password  || !aadhar || !email) {
+
+  if (!name || !phone || !password  || !aadhar || !email) {           
     return res.status(400).json({ message: "All fields are required" });
   }
+
 
   let user = await User.findOne({ phone,aadhar });
   if (user) return res.status(400).json({ message: "User already exists" });
