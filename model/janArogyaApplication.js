@@ -11,7 +11,7 @@ const janArogyaSchema = new mongoose.Schema({
   state: { type: String, required: true },
   district: { type: String, required: true },
   profilePicUser:{ type: String, required: true },
-  email:{type:String},
+  // email:{type:String},
   income_certificate: String,     // storing file as buffer
   caste_certificate: String,      // optional
   ration_id: String,               // ration card file

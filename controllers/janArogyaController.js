@@ -102,12 +102,11 @@ exports.applyJanarogya = async (req, res) => {
 
 exports.checkJanarogya = async (req, res) => {
   try {
-    const { userId } = req.user; // coming from auth middleware
-
+    const userId  = req.user.id; // coming from auth middleware
+  // console.log("fff",userId)
     // If application schema stores user reference as `userId`
-    const application = await JanArogyaApplication.findOne({ userId }).populate(
-      "status"
-    );
+   const application = await JanArogyaApplication.findOne({ appliedBy: userId });
+
     // console.log("ds",application)
     if (application && application.status == "PENDING") {
       return res.status(200).json({ msg: "USER ALREADY EXISTS" });
@@ -129,7 +128,7 @@ exports.checkJanarogya = async (req, res) => {
 exports.getUserApplication = async (req, res) => {
   const id = req.user.id;
   try {
-    const apps = await JanArogyaApplication.find({ id });
+    const apps = await JanArogyaApplication.find({ appliedBy: id });
     res.json(apps);
   } catch (err) {
     res
