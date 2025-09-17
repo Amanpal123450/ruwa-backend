@@ -23,6 +23,27 @@ exports.getAllEmployees = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+exports.getAllUser = async (req, res) => {
+  try {
+    const alluser = await User.find({ role: "USER" });
+
+    if (!alluser || alluser.length === 0) {
+      return res.status(404).json({ message: "No User found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: alluser.length,
+      alluser,
+    });
+  } catch (error) {
+    console.error("Error fetching employees:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
 exports.getProfile = async (req, res) => {
   try {
     const admin = await User.findById(req.user.id).select("-password");

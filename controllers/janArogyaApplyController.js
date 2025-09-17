@@ -5,83 +5,89 @@ const { uploadToCloudinary } = require("../utils/imageUploader");
 // Internal builder (for self or on behalf)
 const buildApplication = async (req, res) => {
   try {
-    const { 
-      name, aadhaar, phone, address, businessType, investmentCapacity,
-      proposedLocation, franchiseCategory, category, relevantExperience
+    const {
+      title, name, aadhaar, phone, email, dob, gender, married, address,
+      educationalQualifications, currentOccupation, currentEmployer, designation,
+      previousWorkExperience, businessDetails, professionalBackground,
+      professionalAssociations, businessStructure, existingEntity, existingEntityName,
+      proposedCity, proposedState, setupTimeline, sitePossession, siteDetails,
+      siteInMind, planToRent, withinMonths, investmentRange, effortsInitiatives,
+      reasonsForPartnership, category, relevantExperience
     } = req.body;
 
-    const {idProof,qualificationCertificate,financialStatement} = req.files || {};
-     const existing=await janArogyaApply.findOne({aadhaar})
-     if(existing){
-      return res.status(400).json({message:"User Already Applied"})
-     }
+    const { idProof, qualificationCertificate, financialStatement } = req.files || {};
+
+    // Check duplicate aadhaar
+    const existing = await JanArogyaApply.findOne({ aadhaar });
+    if (existing) {
+      return res.status(400).json({ message: "User Already Applied" });
+    }
+
     const application = new JanArogyaApply({
+      title,
       name,
-      // email,
+      aadhaar,
       phone,
+      email,
+      dob,
+      gender,
+      married,
       address,
-      businessType,
-      investmentCapacity,
-      proposedLocation,
-      franchiseCategory,
+      educationalQualifications: educationalQualifications ? JSON.parse(educationalQualifications) : [],
+      currentOccupation,
+      currentEmployer,
+      designation,
+      previousWorkExperience: previousWorkExperience ? JSON.parse(previousWorkExperience) : [],
+      businessDetails: businessDetails ? JSON.parse(businessDetails) : [],
+      professionalBackground: professionalBackground ? JSON.parse(professionalBackground) : [],
+      professionalAssociations,
+      businessStructure,
+      existingEntity,
+      existingEntityName,
+      proposedCity,
+      proposedState,
+      setupTimeline,
+      sitePossession,
+      siteDetails: siteDetails ? JSON.parse(siteDetails) : {},
+      siteInMind,
+      planToRent,
+      withinMonths,
+      investmentRange,
+      effortsInitiatives,
+      reasonsForPartnership,
       category,
       relevantExperience,
-      aadhaar,
-      // idProof: req.body.idProof || "",
-      // qualificationCertificate: req.body.qualificationCertificate || "",
-      // financialStatement: req.body.financialStatement || "",
-
-      appliedBy: req.user._id,    // who submitted (employee or user)
-      // forUser: forUserId          // who it is for
+      appliedBy: req.user._id,
     });
 
+    // File uploads
     if (idProof) {
-      const image = await uploadToCloudinary(
-        idProof,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+      const image = await uploadToCloudinary(idProof, process.env.FOLDER_NAME, 1000, 1000);
       application.idProof = image.secure_url;
     }
 
-     if (qualificationCertificate) {
-      const image = await uploadToCloudinary(
-        qualificationCertificate,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+    if (qualificationCertificate) {
+      const image = await uploadToCloudinary(qualificationCertificate, process.env.FOLDER_NAME, 1000, 1000);
       application.qualificationCertificate = image.secure_url;
     }
 
-     if (financialStatement) {
-      const image = await uploadToCloudinary(
-        financialStatement,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+    if (financialStatement) {
+      const image = await uploadToCloudinary(financialStatement, process.env.FOLDER_NAME, 1000, 1000);
       application.financialStatement = image.secure_url;
     }
-    
 
     await application.save();
     return res.status(201).json({ message: "Application submitted successfully", application });
 
   } catch (err) {
+    console.error("Error in buildApplication:", err);
     return res.status(500).json({ message: "Error applying", error: err.message });
   }
 };
 
-// USER applies for themselves
+// Wrappers
 exports.userApply = (req, res) => buildApplication(req, res);
-
-// EMPLOYEE applies on behalf of a user
-exports.employeeApply = (req, res) => {
-  
-  return buildApplication(req, res);
-};
+exports.employeeApply = (req, res) => buildApplication(req, res);
 
 // USER: Get own applications (applications for them)
 exports.getMyApplications = async (req, res) => {

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee } = require("../controllers/adminController");
+const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser } = require("../controllers/adminController");
 const { auth, authorizeRole } = require("../middlewares/auth");
 
 
@@ -17,6 +17,15 @@ router.delete(
   authorizeRole("ADMIN"),
   deleteEmployee
 );
+// ADMIN ROUTE → saare users ke applications
+
+router.get(
+  "/admin/users",
+  auth,
+  authorizeRole("ADMIN"),
+  getAllUser
+);
+
 
 router.post("/create", auth,authorizeRole("ADMIN"), createEmployee);
 // Multer setup
