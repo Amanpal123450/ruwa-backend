@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser } = require("../controllers/adminController");
+const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser, updateEmployee } = require("../controllers/adminController");
 const { auth, authorizeRole } = require("../middlewares/auth");
 
 
@@ -10,6 +10,15 @@ const { auth, authorizeRole } = require("../middlewares/auth");
 
 // Route -> GET /api/users/employees
 router.get("/employees",auth,authorizeRole("ADMIN") ,getAllEmployees);
+
+// Update Employee
+router.put(
+  "/employee/:id",
+  auth,
+  authorizeRole("ADMIN"),
+  updateEmployee
+);
+
 // Admin creates employee
 router.delete(
   "/employee/:id",
