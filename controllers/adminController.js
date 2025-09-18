@@ -33,7 +33,7 @@ exports.updateEmployee = async (req, res) => {
     if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
     }
-
+ let plainPassword = null;
     // Update fields
     if (name) employee.name = name;
     if (phone) employee.phone = phone;
@@ -45,6 +45,7 @@ exports.updateEmployee = async (req, res) => {
 
     // Password update (agar diya gaya ho)
     if (password) {
+        plainPassword = password; 
       const hashedPassword = await bcrypt.hash(password, 10);
       employee.password = hashedPassword;
     }
@@ -207,6 +208,10 @@ exports.updateEmployee = async (req, res) => {
                 <div class="detail-item">
                   <div class="detail-label">Employee ID:</div>
                   <div class="detail-value">${employee.employeeId || 'Not provided'}</div>
+                </div>
+                 <div class="detail-item">
+                  <div class="detail-label">Employee password:</div>
+                  <div class="detail-value">${ plainPassword|| 'Not provided'}</div>
                 </div>
                 
                 <div class="detail-item">
