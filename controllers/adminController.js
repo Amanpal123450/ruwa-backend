@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../model/user");
 const { sendEmail } = require("../utils/sendEmail");
 require('dotenv').config();
-
+const attendance=require("../model/attendance")
 // Get Profile
 
 exports.getAllEmployees = async (req, res) => {
@@ -23,6 +23,47 @@ exports.getAllEmployees = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+exports.getEmployeeAttendance = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find attendance records for this employee
+    const attendanceHistory = await attendance.find({ employeeId: id }).sort({ date: -1 });
+
+    if (!attendanceHistory || attendanceHistory.length === 0) {
+      return res.status(404).json({ message: "No attendance records found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      history: attendanceHistory,
+    });
+  } catch (error) {
+    console.error("Error fetching attendance:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.getEmployeeById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const employee = await User.findOne({ _id: id, role: "EMPLOYEE" });
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      employee,
+    });
+  } catch (error) {
+    console.error("Error fetching employee:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Update Employee by Admin
 exports.updateEmployee = async (req, res) => {
   try {
