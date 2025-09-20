@@ -67,9 +67,9 @@ const attendanceRoutes=require("./routes/attendanceRoutes");
 const employeeImg=require("./routes/employeeProfileImage");
 const patientRoutes=require("./routes/patientRoutes");
 const locationRoutes = require("./routes/locationsRoutes");
-<<<<<<< HEAD
+
 const AppDashboardRoutes=require("./routes/AppDashboardRoute");
-=======
+
 const slides = require("./routes/slidesRoutes");
 
 // const slides = [
@@ -98,7 +98,6 @@ const slides = require("./routes/slidesRoutes");
 // ];
 
 
->>>>>>> e946a803850f7975a3b11f972aa5d86e9dc8e977
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
 app.use("/api/app-dashboard/", AppDashboardRoutes);
