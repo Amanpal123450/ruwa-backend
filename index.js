@@ -111,7 +111,7 @@ app.use("/api/uu",employeeImg)
 app.use("/api/attendance",attendanceRoutes)
 app.use("/api/employee",patientRoutes)
 app.use("/api/location", locationRoutes);
-app.use("/api/slides",slides);
+app.use("/api/home",slides);
 
 
 // Models
