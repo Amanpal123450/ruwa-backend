@@ -67,6 +67,33 @@ const attendanceRoutes=require("./routes/attendanceRoutes")
 const employeeImg=require("./routes/employeeProfileImage")
 const patientRoutes=require("./routes/patientRoutes")
 const locationRoutes = require("./routes/locationsRoutes");
+const slides = require("./routes/slidesRoutes");
+
+// const slides = [
+//   {
+//     id: 1,
+//     heading: "Inclusive Healthcare",
+//     text: "Bringing care to every doorstep with compassion and innovation.",
+//     img: "/assets/images/inch.jpg",
+//     icon: "🩺"
+//   },
+//   {
+//     id: 2,
+//     heading: "Digital Healthcare",
+//     text: "Leveraging technology to connect rural patients with specialists.",
+//     img: "/assets/images/digo.jpg",
+//     icon: "💻"
+//   },
+//   {
+//     id: 3,
+//     heading: "Rapid Ambulance Service",
+//     text: "Emergency response at lightning speed across all terrains.",
+//     img: "/assets/images/ambulance.jpg",
+//     icon: "🚑"
+//   }
+//   // 👉 add the rest of your slides here...
+// ];
+
 
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
@@ -84,6 +111,8 @@ app.use("/api/uu",employeeImg)
 app.use("/api/attendance",attendanceRoutes)
 app.use("/api/employee",patientRoutes)
 app.use("/api/location", locationRoutes);
+app.use("/api/slides",slides);
+
 
 // Models
 const User = require("./model/user");
