@@ -4,7 +4,10 @@ const { sendEmail } = require("../utils/sendEmail");
 require('dotenv').config();
 const attendance=require("../model/attendance")
 // Get Profile
-
+const AmbulanceBooking = require("../model/ambulanceBooking");
+const ApplyInsuranceApplication = require("../model/applyInsurance");
+const JanArogyaApplication = require("../model/janArogyaApplication");
+const JanArogyaApply = require("../model/janArogyaApply");
 exports.getAllEmployees = async (req, res) => {
   try {
     const employees = await User.find({ role: "EMPLOYEE" });
@@ -445,4 +448,76 @@ exports.deleteEmployee = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error", error: error.message });
   }         
+};
+exports.getAdminEmployeeAppliedUsers = async (req, res) => {
+  try {
+    // Get employee ID from request parameters instead of req.user._id
+    const { employeeId } = req.params; // For route like /admin/employee/:employeeId/applied-users
+    // OR use const employeeId = req.query.employeeId; for query parameter
+    
+    // Validate employee ID
+    if (!employeeId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Employee ID is required" 
+      });
+    }
+
+    // Fetch all applications with populated data for the specific employee
+    const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId });
+    const insurance = await ApplyInsuranceApplication.find({ appliedBy: employeeId });
+    const janArogya = await JanArogyaApplication.find({ appliedBy: employeeId });
+    const janArogyaApply = await JanArogyaApply.find({ appliedBy: employeeId });
+
+    // Flatten into desired format
+    const appliedUsers = [
+      ...ambulance.map(a => ({
+        name: a.fullName,
+        email: a.email,
+        phone: a.phone,
+        status: a.status,
+        hospitalPreference: a.hospitalPreference,
+        appointmentDate: a.appointmentDate,
+        preferredTime: a.preferredTime,
+        submittedAt: a.submittedAt,
+        service: "AmbulanceBooking"
+      })),
+      ...insurance.map(i => ({
+        name: i.fullName,
+        email: i.email,
+        aadhaarNumber: i.aadhaarNumber,
+        district: i.district,
+        dob: i.dob,
+        phone: i.phone || "Not Provided",
+        status: i.status,
+        service: "ApplyInsurance",
+        insuranceType: i.insuranceType
+      })),
+      ...janArogya.map(j => ({
+        name: j.name,
+        email: j.email || "Not Provided",
+        phone: j.phone || "Not Provided",
+        state: j.state,
+        district: j.district,
+        status: j.status,
+        service: "JanArogyaApplication"
+      })),
+      ...janArogyaApply.map(j => ({
+        name: j.name,
+        email: j.email || "Not Provided",
+        phone: j.phone,
+        businessType: j.businessType,
+        investmentCapacity: j.investmentCapacity,
+        proposedLocation: j.proposedLocation,
+        franchiseCategory: j.franchiseCategory,
+        category: j.category,
+        status: j.status,
+        service: "JanArogyaApply"
+      }))
+    ];
+
+    res.json({ success: true, appliedUsers });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };

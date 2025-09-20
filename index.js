@@ -61,15 +61,17 @@ const statesRouter = require("./routes/statesRouter");
 const userRoutes = require("./routes/userProfile");
 const employeeRoutes = require("./routes/employeeRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const dashBoardRoutes=require("./routes/dashBoardRoutes")
-const profileRoutes=require("./routes/profileRoutes")
-const attendanceRoutes=require("./routes/attendanceRoutes")
-const employeeImg=require("./routes/employeeProfileImage")
-const patientRoutes=require("./routes/patientRoutes")
+const dashBoardRoutes=require("./routes/dashBoardRoutes");
+const profileRoutes=require("./routes/profileRoutes");
+const attendanceRoutes=require("./routes/attendanceRoutes");
+const employeeImg=require("./routes/employeeProfileImage");
+const patientRoutes=require("./routes/patientRoutes");
 const locationRoutes = require("./routes/locationsRoutes");
-
+const AppDashboardRoutes=require("./routes/AppDashboardRoute");
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
+app.use("/api/app-dashboard/", AppDashboardRoutes);
+
 app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/services/janarogya", janArogyaRoutes);
@@ -78,11 +80,11 @@ app.use("/api/services/apply-insurance", applyInsurance);
 app.use("/api/services/apply-kendra", applyKendra);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/admin",dashBoardRoutes)
-app.use("/api/u",profileRoutes)
-app.use("/api/uu",employeeImg)
-app.use("/api/attendance",attendanceRoutes)
-app.use("/api/employee",patientRoutes)
+app.use("/api/admin",dashBoardRoutes);
+app.use("/api/u",profileRoutes);
+app.use("/api/uu",employeeImg);
+app.use("/api/attendance",attendanceRoutes);
+app.use("/api/employee",patientRoutes);
 app.use("/api/location", locationRoutes);
 
 // Models

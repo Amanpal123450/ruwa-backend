@@ -54,7 +54,7 @@ const totalApplications = await patient.countDocuments();
 
 exports.getEmployeeAppliedUsers = async (req, res) => {
   try {
-    const employeeId = req.user._id;
+    const employeeId = req.user._id ;
 
     // Fetch all applications with populated 
     const ambulance = await AmbulanceBooking.find({ appliedBy: employeeId })
