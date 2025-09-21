@@ -14,7 +14,7 @@ const {
 const { auth, authorizeRole } = require("../middlewares/auth");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
-router.post("/verify-payment", auth, authorizeRole("EMPLOYEE"), upload.single("paymentScreenshot"), verifyPayment);
+router.post("/verify-payment", auth, authorizeRole("EMPLOYEE","USER"), upload.single("paymentScreenshot"), verifyPayment);
 // USER applies for themselves
 router.post(
   "/apply",
