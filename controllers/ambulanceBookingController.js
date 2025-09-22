@@ -10,30 +10,88 @@ const buildBooking = async (req, res) => {
       fullName,
       phone,
       email,
+      location,
+      
       hospitalPreference,
       appointmentDate,
       preferredTime,
       message
     } = req.body;
 
+    // Validation for required fields
+    if (!fullName || !phone || !email || !location || !appointmentDate || !preferredTime) {
+      return res.status(400).json({ 
+        message: "Missing required fields",
+        required: ["fullName", "phone", "email", "location", "appointmentDate", "preferredTime"]
+      });
+    }
+
+    // Validate location data
+    if (!latitude || !longitude) {
+      return res.status(400).json({ 
+        message: "Location coordinates are required for ambulance dispatch" 
+      });
+    }
+
+    // Validate coordinates format
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+    
+    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      return res.status(400).json({ 
+        message: "Invalid coordinates format" 
+      });
+    }
+
     const booking = new AmbulanceBooking({
       fullName,
       phone,
       email,
+      location,
+      latitude: lat,
+      longitude: lng,
       hospitalPreference,
       appointmentDate,
       preferredTime,
       message,
       appliedBy: userId,
-      
+      status: 'pending', // Default status
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
     await booking.save();
-    res.status(201).json({ message: "Booking submitted", booking });
+    
+    res.status(201).json({ 
+      message: "Ambulance booking submitted successfully", 
+      booking: {
+        id: booking._id,
+        fullName: booking.fullName,
+        phone: booking.phone,
+        email: booking.email,
+        location: booking.location,
+        coordinates: {
+          latitude: booking.latitude,
+          longitude: booking.longitude
+        },
+        hospitalPreference: booking.hospitalPreference,
+        appointmentDate: booking.appointmentDate,
+        preferredTime: booking.preferredTime,
+        status: booking.status,
+        createdAt: booking.createdAt
+      }
+    });
+    
   } catch (err) {
-    res.status(500).json({ message: "Error creating booking", error: err.message });
+    console.error("Ambulance booking error:", err);
+    res.status(500).json({ 
+      message: "Error creating ambulance booking", 
+      error: process.env.NODE_ENV === 'development' ? err.message : "Internal server error"
+    });
   }
 };
+
+
 
 // USER books for self
 exports.userBookAmbulance = async (req, res) => {

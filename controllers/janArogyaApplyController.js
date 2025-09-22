@@ -122,7 +122,32 @@ exports.getAllApplications = async (req, res) => {
     res.status(500).json({ message: "Error fetching all applications", error: err.message });
   }
 };
+exports.checkJanarogyaApply = async (req, res) => {
+  try {
+    const id = req.query.id; // 👈 GET query se aayega
+    const userId = req.user.id;
 
+    let application;
+
+    if (id) {
+      application = await janArogyaApply.findById(id);
+    } else {
+      application = await janArogyaApply.findOne({ appliedBy: userId });
+    }
+
+    if (application && application.status === "PENDING") {
+      return res.status(200).json({ msg: "USER ALREADY EXISTS" });
+    }
+
+    if (application && application.status === "APPROVED") {
+      return res.status(200).json({ msg: "APPROVED", application });
+    }
+
+    return res.status(404).json({ msg: "USER NOT FOUND" });
+  } catch (e) {
+    return res.status(400).json({ error: e.message });
+  }
+};
 // ADMIN: Update status
 exports.updateJanArogyaStatus = async (req, res) => {
   try {
@@ -193,7 +218,7 @@ exports.verifyPayment = async (req, res) => {
       screenshotUrl,
       paid: true
     };
-    application.status = "PAID";
+    // application.status = ;
 
     await application.save();
 
