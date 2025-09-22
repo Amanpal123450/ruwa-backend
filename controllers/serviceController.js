@@ -1,4 +1,5 @@
 const Service = require("../model/serviceSchema");
+const { uploadToCloudinary } = require("../utils/imageUploader");
 
 // Get all services
 exports.getServices = async (req, res) => {
@@ -13,9 +14,32 @@ exports.getServices = async (req, res) => {
 // Create service
 exports.createService = async (req, res) => {
   try {
-    const service = new Service(req.body);
+    const { title, description } = req.body;
+    const { icon } = req.files || {};
+
+    if (!title || !description) {
+      return res.status(400).json({ message: "Title and description are required" });
+    }
+
+    let iconUrl = "";
+    if (icon) {
+      const uploadedIcon = await uploadToCloudinary(
+        icon,
+        process.env.FOLDER_NAME,
+        300,
+        300
+      );
+      iconUrl = uploadedIcon.secure_url;
+    }
+
+    const service = new Service({
+      title,
+      description,
+      icon: iconUrl,
+    });
+
     await service.save();
-    res.json(service);
+    res.status(201).json({ message: "Service created successfully", service });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -24,12 +48,28 @@ exports.createService = async (req, res) => {
 // Update service
 exports.updateService = async (req, res) => {
   try {
-    const service = await Service.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(service);
+    const { title, description } = req.body;
+    const { icon } = req.files || {};
+
+    let updateData = { title, description };
+
+    if (icon) {
+      const uploadedIcon = await uploadToCloudinary(
+        icon,
+        process.env.FOLDER_NAME,
+        300,
+        300
+      );
+      updateData.icon = uploadedIcon.secure_url;
+    }
+
+    const service = await Service.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    res.json({ message: "Service updated successfully", service });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -38,8 +78,13 @@ exports.updateService = async (req, res) => {
 // Delete service
 exports.deleteService = async (req, res) => {
   try {
-    await Service.findByIdAndDelete(req.params.id);
-    res.json({ message: "Service deleted" });
+    const service = await Service.findByIdAndDelete(req.params.id);
+
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    res.json({ message: "Service deleted successfully" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

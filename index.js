@@ -106,8 +106,8 @@ app.use("/api/location", locationRoutes);
 app.use("/api/slide-routes",slideRoutes)
 app.use("/api/testimonials-routes",testimonialsRoutes)
 app.use("/api/service-routes",serviceRoutes)
-app.use("/api/home-routes",homepageRoutes)
 app.use("/api/hero-routes",heroroutes)
+app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
 
 app.use('/api/about', aboutRoute);
