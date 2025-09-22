@@ -69,8 +69,15 @@ const patientRoutes=require("./routes/patientRoutes");
 const locationRoutes = require("./routes/locationsRoutes");
 
 const AppDashboardRoutes=require("./routes/AppDashboardRoute");
+ 
 
-const slides = require("./routes/slidesRoutes");
+const slideRoutes= require("./routes/slidesRoutes");
+const testimonialsRoutes=require('./routes/testimonialsRoutes')
+const serviceRoutes=require("./routes/serviceRoutes")
+const heroroutes=require("./routes/heroRoutes")
+const homepageRoutes=require("./routes/homepageRoutes")
+const aboutRoute=require("./routes/about")
+
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
 // const slides = [
