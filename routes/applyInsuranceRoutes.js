@@ -16,12 +16,6 @@ router.post(
   "/user/apply",
   auth,
   authorizeRole("USER"),
-  upload.fields([
-    { name: "id_proof", maxCount: 1 },
-    { name: "passport_photo", maxCount: 1 },
-    { name: "medical_documents", maxCount: 1 },
-    { name: "income_certificate", maxCount: 1 }
-  ]),
   insCtrl.userApplyInsurance
 );
 

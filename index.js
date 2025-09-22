@@ -71,6 +71,7 @@ const locationRoutes = require("./routes/locationsRoutes");
 const AppDashboardRoutes=require("./routes/AppDashboardRoute");
 
 const slides = require("./routes/slidesRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
 
 // const slides = [
 //   {
@@ -117,6 +118,7 @@ app.use("/api/attendance",attendanceRoutes);
 app.use("/api/employee",patientRoutes);
 app.use("/api/location", locationRoutes);
 app.use("/api/home",slides);
+app.use("/api/feedback", feedbackRoutes);
 
 
 // Models
