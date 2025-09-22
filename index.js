@@ -77,33 +77,12 @@ const serviceRoutes=require("./routes/serviceRoutes")
 const heroroutes=require("./routes/heroRoutes")
 const homepageRoutes=require("./routes/homepageRoutes")
 const aboutRoute=require("./routes/about")
-
 const feedbackRoutes = require("./routes/feedbackRoutes");
+const serviceCardRoutes = require("./routes/servicesPageRouter/serviceCard");
+const serviceFeatures = require("./routes/servicesPageRouter/serviceFeatures")
+const serviceHomepageRoutes = require("./routes/servicesPageRouter/servicesHome");
 
-// const slides = [
-//   {
-//     id: 1,
-//     heading: "Inclusive Healthcare",
-//     text: "Bringing care to every doorstep with compassion and innovation.",
-//     img: "/assets/images/inch.jpg",
-//     icon: "🩺"
-//   },
-//   {
-//     id: 2,
-//     heading: "Digital Healthcare",
-//     text: "Leveraging technology to connect rural patients with specialists.",
-//     img: "/assets/images/digo.jpg",
-//     icon: "💻"
-//   },
-//   {
-//     id: 3,
-//     heading: "Rapid Ambulance Service",
-//     text: "Emergency response at lightning speed across all terrains.",
-//     img: "/assets/images/ambulance.jpg",
-//     icon: "🚑"
-//   }
-//   // 👉 add the rest of your slides here...
-// ];
+
 
 
 app.use("/api/popup", popupRoutes);
@@ -130,8 +109,13 @@ app.use("/api/service-routes",serviceRoutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/hero-routes",heroroutes)
 app.use("/api/feedback", feedbackRoutes);
+
 app.use('/api/about', aboutRoute);
 
+// services 
+app.use("/api/service-card",serviceCardRoutes)
+app.use("/api/service-Features",serviceFeatures)
+app.use("/api/services", serviceHomepageRoutes);
 
 // Models
 const User = require("./model/user");
