@@ -70,7 +70,11 @@ const locationRoutes = require("./routes/locationsRoutes");
 
 const AppDashboardRoutes=require("./routes/AppDashboardRoute");
 
-const slides = require("./routes/slidesRoutes");
+const slideRoutes= require("./routes/slidesRoutes");
+const testimonialsRoutes=require('./routes/testimonialsRoutes')
+const serviceRoutes=require("./routes/serviceRoutes")
+const heroroutes=require("./routes/heroRoutes")
+const homepageRoutes=require("./routes/homepageRoutes")
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
 // const slides = [
@@ -117,7 +121,11 @@ app.use("/api/uu",employeeImg);
 app.use("/api/attendance",attendanceRoutes);
 app.use("/api/employee",patientRoutes);
 app.use("/api/location", locationRoutes);
-app.use("/api/home",slides);
+app.use("/api/slide-routes",slideRoutes)
+app.use("/api/testimonials-routes",testimonialsRoutes)
+app.use("/api/service-routes",serviceRoutes)
+app.use("/api/home-routes",homepageRoutes)
+app.use("/api/hero-routes",heroroutes)
 app.use("/api/feedback", feedbackRoutes);
 
 
