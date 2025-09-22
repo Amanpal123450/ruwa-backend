@@ -12,7 +12,7 @@ const aboutData = {
       "We understand that navigating the health system can be challenging, and we are here to simplify the process, ensuring that our patients receive the care they need without any hassles.",
       "At RUWA India, we are dedicated to providing a complete range of healthcare services under one roof. Our offerings include:"
     ],
-    image: "/assets/images/doctor.jpg"
+    image: "https://res.cloudinary.com/dknrega1a/image/upload/v1758396477/employee_profiles/chyswl95olvsp1ikuork.jpg"
   },
   cards: [
     {
