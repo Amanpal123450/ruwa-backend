@@ -117,13 +117,12 @@ app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
 
-//about
 
-app.use('/api/about', aboutRoute);
 
 //contact
 app.use("/api/contact-content",contactSettingRoutes)
-
+//about
+app.use('/api/about', aboutRoute);
 
 app.use('/api/aboutHome', aboutHome);
 app.use('/api/aboutWelcome', aboutWelcome);
