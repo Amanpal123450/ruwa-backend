@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const testimonialController = require("../controllers/testimonialsController");
+const { auth, authorizeRole } = require("../middlewares/auth");
 
 // CRUD routes
-router.get("/", testimonialController.getTestimonials);
-router.post("/", testimonialController.createTestimonial);
-router.put("/:id", testimonialController.updateTestimonial);
-router.delete("/:id", testimonialController.deleteTestimonial);
+router.get("/",auth,authorizeRole("ADMIN"), testimonialController.getTestimonials);
+router.post("/",auth,authorizeRole("ADMIN"), testimonialController.createTestimonial);
+router.put("/:id",auth,authorizeRole("ADMIN"), testimonialController.updateTestimonial);
+router.delete("/:id",auth,authorizeRole("ADMIN"), testimonialController.deleteTestimonial);
 
 module.exports = router;
