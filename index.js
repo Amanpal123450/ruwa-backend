@@ -81,7 +81,14 @@ const feedbackRoutes = require("./routes/feedbackRoutes");
 const serviceCardRoutes = require("./routes/servicesPageRouter/serviceCard");
 const serviceFeatures = require("./routes/servicesPageRouter/serviceFeatures")
 const serviceHomepageRoutes = require("./routes/servicesPageRouter/servicesHome");
+
 const contactSettingRoutes=require("./routes/contactSettingRoutes")
+
+const aboutHome = require("./routes/aboutPageRoutes/aboutHome");
+const aboutWelcome = require("./routes/aboutPageRoutes/aboutPageWelcome");
+const aboutFeature = require("./routes/aboutPageRoutes/aboutPageFeature");
+
+
 
 
 
@@ -110,9 +117,19 @@ app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
 
+//about
+
 app.use('/api/about', aboutRoute);
+
 //contact
 app.use("/api/contact-content",contactSettingRoutes)
+
+
+app.use('/api/aboutHome', aboutHome);
+app.use('/api/aboutWelcome', aboutWelcome);
+app.use('/api/aboutFeature', aboutFeature);
+
+
 // services 
 app.use("/api/service-card",serviceCardRoutes)
 app.use("/api/service-Features",serviceFeatures)
