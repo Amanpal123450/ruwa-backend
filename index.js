@@ -81,7 +81,7 @@ const feedbackRoutes = require("./routes/feedbackRoutes");
 const serviceCardRoutes = require("./routes/servicesPageRouter/serviceCard");
 const serviceFeatures = require("./routes/servicesPageRouter/serviceFeatures")
 const serviceHomepageRoutes = require("./routes/servicesPageRouter/servicesHome");
-
+const contactSettingRoutes=require("./routes/contactSettingRoutes")
 
 
 
@@ -111,7 +111,8 @@ app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
 
 app.use('/api/about', aboutRoute);
-
+//contact
+app.use("/api/contact-content",contactSettingRoutes)
 // services 
 app.use("/api/service-card",serviceCardRoutes)
 app.use("/api/service-Features",serviceFeatures)
