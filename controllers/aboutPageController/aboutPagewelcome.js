@@ -31,3 +31,17 @@ exports.updateAbout = async (req, res) => {
     res.status(500).json({ message: "Error updating About", err });
   }
 };
+
+exports.deleteAboutById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await AboutPage.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "About not found" });
+    }
+    res.json({ message: "About deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting About", err });
+  }
+};
+

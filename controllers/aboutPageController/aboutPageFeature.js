@@ -31,3 +31,19 @@ exports.updateFeatures = async (req, res) => {
     res.status(500).json({ message: "Error updating Features", err });
   }
 };
+
+// controllers/featuresController.js
+
+exports.deleteFeaturesById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await FeaturesPage.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Features not found" });
+    }
+    res.json({ message: "Features deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting Features", err });
+  }
+};
+
