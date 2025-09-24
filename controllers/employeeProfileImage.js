@@ -1,7 +1,6 @@
 const Employee = require("../model/user"); // Your Employee mongoose model
 const cloudinary = require("../utils/imageUploader"); // Cloudinary setup
 const JanArogyaApplication=require("../model/janArogyaApplication");
-const { default: mongoose } = require("mongoose");
 
 // Get employee profile
 exports.getProfile = async (req, res) => {
@@ -77,12 +76,11 @@ exports.uploadProfileImage = async (req, res) => {
 exports.uploadDOB = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { DOB,email } = req.body; // frontend sends { DOB: "YYYY-MM-DD" }
+    const { DOB } = req.body; // frontend sends { DOB: "YYYY-MM-DD" }
 
     if (!DOB) {
       return res.status(400).json({ message: "DOB is required" });
     }
-
    // Update DOB in Employee
 const employee = await Employee.findByIdAndUpdate(
   userId,
@@ -112,7 +110,7 @@ if (!employee) {
 res.status(200).json({
   message: "DOB updated successfully",
   profile: employee,
-  application,
+  employee,
 });
 
   } catch (err) {
