@@ -3,7 +3,8 @@ const Service = require("../../model/servicesPageModel/serviceCard");
 // GET all services
 exports.getAllServices = async (req, res) => {
   try {
-    const services = await Service.find();
+   const services = await Service.find().select("-buttonLink");
+
     res.status(200).json({ success: true, services });
   } catch (error) {
     console.error(error);

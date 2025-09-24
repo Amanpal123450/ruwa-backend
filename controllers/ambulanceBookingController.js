@@ -27,35 +27,24 @@ const buildBooking = async (req, res) => {
     }
 
     // Validate location data
-    if (!latitude || !longitude) {
-      return res.status(400).json({ 
-        message: "Location coordinates are required for ambulance dispatch" 
-      });
-    }
+    
 
     // Validate coordinates format
-    const lat = parseFloat(latitude);
-    const lng = parseFloat(longitude);
     
-    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-      return res.status(400).json({ 
-        message: "Invalid coordinates format" 
-      });
-    }
+   
 
     const booking = new AmbulanceBooking({
       fullName,
       phone,
       email,
       location,
-      latitude: lat,
-      longitude: lng,
+     
       hospitalPreference,
       appointmentDate,
       preferredTime,
       message,
       appliedBy: userId,
-      status: 'pending', // Default status
+      status: 'PENDING', // Default status
       createdAt: new Date(),
       updatedAt: new Date()
     });
@@ -70,10 +59,7 @@ const buildBooking = async (req, res) => {
         phone: booking.phone,
         email: booking.email,
         location: booking.location,
-        coordinates: {
-          latitude: booking.latitude,
-          longitude: booking.longitude
-        },
+        
         hospitalPreference: booking.hospitalPreference,
         appointmentDate: booking.appointmentDate,
         preferredTime: booking.preferredTime,
