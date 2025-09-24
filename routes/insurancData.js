@@ -42,6 +42,10 @@ const insuranceData = [
       'Multilingual support for wider reach.'
     ],
     bgClass: 'bg-light',
+  },
+   {
+   
+    title: 'Choose your Insurance Plan',
   }
 ];
 
