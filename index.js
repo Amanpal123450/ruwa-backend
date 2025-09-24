@@ -91,7 +91,7 @@ const Janarogycard = require("./routes/JanarogycardData");
 const JansawvimanData = require("./routes/JansawvimanData");
 const ambulanceData = require("./routes/AmbulanceData");
 const insuranceData = require("./routes/insurancData");
-
+const janarogyaFirst=require("./routes//kendraFirstPage")
 
 
 
@@ -130,8 +130,8 @@ app.use("/api/ambulanceData", ambulanceData);
 app.use("/api/JansawvimanData", JansawvimanData);
 // JanarogycardData
 app.use('/api/Janarogycard',Janarogycard);
-
-
+//Janarogykendra
+app.use('/api/kendra-content',janarogyaFirst);
 //about
 
 

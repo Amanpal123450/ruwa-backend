@@ -14,28 +14,19 @@ exports.getServices = async (req, res) => {
 // Create service
 exports.createService = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const { icon } = req.files || {};
+    const { title, description ,icon} = req.body;
+  
 
-    if (!title || !description) {
+    if (!title || !description || !icon) {
       return res.status(400).json({ message: "Title and description are required" });
     }
 
-    let iconUrl = "";
-    if (icon) {
-      const uploadedIcon = await uploadToCloudinary(
-        icon,
-        process.env.FOLDER_NAME,
-        300,
-        300
-      );
-      iconUrl = uploadedIcon.secure_url;
-    }
+    
 
     const service = new Service({
       title,
       description,
-      icon: iconUrl,
+      icon
     });
 
     await service.save();
