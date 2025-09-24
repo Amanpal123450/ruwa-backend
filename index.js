@@ -84,6 +84,10 @@ const serviceHomepageRoutes = require("./routes/servicesPageRouter/servicesHome"
 const aboutHome = require("./routes/aboutPageRoutes/aboutHome");
 const aboutWelcome = require("./routes/aboutPageRoutes/aboutPageWelcome");
 const aboutFeature = require("./routes/aboutPageRoutes/aboutPageFeature");
+const Janarogycard = require("./routes/JanarogycardData");
+const JansawvimanData = require("./routes/JansawvimanData");
+const ambulanceData = require("./routes/AmbulanceData");
+const insuranceData = require("./routes/insurancData");
 
 
 
@@ -112,6 +116,16 @@ app.use("/api/service-routes",serviceRoutes)
 app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
+
+// insuranceData
+app.use("/api/insuranceData", insuranceData);
+// ambulanceData
+app.use("/api/ambulanceData", ambulanceData);
+// JansawvimanData
+app.use("/api/JansawvimanData", JansawvimanData);
+// JanarogycardData
+app.use('/api/Janarogycard',Janarogycard);
+
 
 //about
 
