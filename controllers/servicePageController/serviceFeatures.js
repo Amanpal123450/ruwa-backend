@@ -28,10 +28,19 @@ exports.getServiceById = async (req, res) => {
 // POST create new service
 exports.createService = async (req, res) => {
   try {
-    const service = await Service.create(req.body);
+    console.log(req.body)
+    const service = new Service({
+      icon: req.body.icon,
+      title: req.body.title,
+      description: req.body.description,
+    });
+     await service.save();
     res.status(201).json({ success: true, service });
   } catch (error) {
     console.error(error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ success: false, message: error.message, errors: error.errors });
+    }
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };

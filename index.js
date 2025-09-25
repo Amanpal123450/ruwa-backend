@@ -42,8 +42,8 @@ app.use(fileUpload({
   limits: { fileSize: 10 * 1024 * 1024 },
   abortOnLimit: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // <--- must be here
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
