@@ -43,6 +43,10 @@ const ambulanceData = [
       'Assisted by trained support staff throughout the journey.'
     ],
     bgClass: 'bg-light'
+  },
+   {
+   
+    title: 'Book your Ambulance',
   }
 ];
 

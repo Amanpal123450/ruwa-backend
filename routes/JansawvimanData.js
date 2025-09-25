@@ -42,6 +42,10 @@ const JansawvimanData = [
       'Includes transport to partnered hospitals.'
     ],
     bgClass: 'bg-light'
+  },
+  {
+   
+    title: 'Join Jan Swabhiman Seva',
   }
 ];
 

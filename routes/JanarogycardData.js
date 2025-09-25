@@ -42,6 +42,10 @@ const Janarogycard = [
       "Regular health camps and wellness checkups."
     ],
     bgClass: "bg-light",
+  },
+    {
+   
+    title: 'Janarogy Card',
   }
 ];
 
