@@ -11,7 +11,6 @@ const buildBooking = async (req, res) => {
       phone,
       email,
       location,
-      
       hospitalPreference,
       appointmentDate,
       preferredTime,

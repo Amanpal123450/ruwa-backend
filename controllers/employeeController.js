@@ -5,6 +5,7 @@ const AmbulanceBooking = require("../model/ambulanceBooking");
 const ApplyInsuranceApplication = require("../model/applyInsurance");
 const JanArogyaApplication = require("../model/janArogyaApplication");
 const JanArogyaApply = require("../model/janArogyaApply");
+const sevaApplication=require("../model/sevaApplication")
 const moment = require("moment"); // for date filtering
 const patient=require("../model/patient")
 exports.getEmployeeProfile = async (req, res) => {
@@ -191,7 +192,10 @@ exports.getEmployeeServiceUsers = async (req, res) => {
         applications = await JanArogyaApply.find({ appliedBy: employeeId })
           .populate( "name phone _id");
         break;
-
+     case "sevaApplication":
+        applications = await sevaApplication.find({ appliedBy: employeeId })
+          
+        break;
       default:
         return res.status(400).json({ success: false, message: "Invalid service type" });
     }
