@@ -66,6 +66,8 @@ const profileRoutes=require("./routes/profileRoutes");
 const attendanceRoutes=require("./routes/attendanceRoutes");
 const employeeImg=require("./routes/employeeProfileImage");
 const patientRoutes=require("./routes/patientRoutes");
+
+
 const locationRoutes = require("./routes/locationsRoutes");
 
 const AppDashboardRoutes=require("./routes/AppDashboardRoute");
