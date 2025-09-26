@@ -29,13 +29,23 @@ exports.getServiceById = async (req, res) => {
 // POST create new service
 exports.createService = async (req, res) => {
   try {
-    const service = await Service.create(req.body);
+    const { icon, title, description } = req.body;
+
+    if (!icon || !title || !description) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "icon, title and description are required" 
+      });
+    }
+
+    const service = await Service.create({ icon, title, description });
     res.status(201).json({ success: true, service });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
 
 // PUT update service
 exports.updateService = async (req, res) => {
