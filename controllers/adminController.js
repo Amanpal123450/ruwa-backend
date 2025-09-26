@@ -422,7 +422,11 @@ Please keep this information secure.
 - HR Team
 `;
 
-  await sendEmail(email, subject, message);
+  try {
+      await sendEmail(email, subject, message);
+    } catch (err) {
+      console.error("❌ Email failed but employee will still be created:", err.message);
+    }
 
  await newEmployee.save();
     res.status(201).json({
