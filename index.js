@@ -96,6 +96,7 @@ const insuranceData = require("./routes/insurancData");
 const janarogyaFirst=require("./routes//kendraFirstPage")
 const janarogyaSecond=require("./routes/kendraSecondPage")
 const sevaApplication=require("./routes/sevaRoutes")
+const employeeData=require("./routes/EmpData")
 
 
 
@@ -123,6 +124,9 @@ app.use("/api/service-routes",serviceRoutes)
 app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
+
+// employeeData
+app.use("/api/employeeData",employeeData);
 
 // sevaApplication
 app.use("/api/services/sevaApplication",sevaApplication);
