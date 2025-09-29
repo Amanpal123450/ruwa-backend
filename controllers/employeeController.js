@@ -253,14 +253,14 @@ exports.getDashboard = async (req, res) => {
     tomorrow.setDate(today.getDate() + 1);
 
     let record = await Attendance.findOne({
-    user: userId,
-    $expr: {
+      user: userId,
+      $expr: {
         $eq: [
-            { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-            new Date().toISOString().slice(0, 10)
+          { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+          new Date().toISOString().slice(0, 10)
         ]
-    }
-});
+      }
+    });
 
     let workDayStatus;
     if (!record) {
@@ -311,6 +311,115 @@ exports.getDashboard = async (req, res) => {
       assignedDate: { $gte: today, $lt: tomorrow },
     });
 
+    // ---------- PROFILE FIELDS CONFIGURATION ----------
+    const profileFields = [
+      { icon: "📍", label: "Address", field: "address" },
+      { icon: "📱", label: "Contact", field: "phone" },
+      { icon: "🏢", label: "Area of Work", field: "department" },
+      { icon: "👔", label: "Designation", field: "designation" },
+      { icon: "🏛️", label: "Department", field: "department" },
+      { icon: "💼", label: "Work Role", field: "workRole" },
+      { icon: "🩸", label: "Blood Group", field: "bloodGroup" },
+    ];
+
+    // ---------- WORK DAY STATUS FIELDS ----------
+    const workDayFields = [
+      { icon: "✅", label: "Status", field: "status", color: "#10b981" },
+      { icon: "🕐", label: "Check-in Time", field: "checkInTime", color: "#3b82f6" },
+      { icon: "⏱️", label: "Hours Worked", field: "hoursWorked", color: "#8b5cf6" },
+      { icon: "☕", label: "Breaks Taken", field: "breaksTaken", color: "#f59e0b", suffix: " breaks" },
+      { icon: "⏳", label: "Remaining Hours", field: "remainingHours", color: "#ef4444" },
+    ];
+
+    // ---------- PERFORMANCE FIELDS ----------
+    const performanceFields = [
+      { label: "Performance Score", field: "performancePercentage", suffix: "%", color: "#10b981" },
+      { label: "Total Tasks", field: "totalTasks", color: "#3b82f6" },
+      { label: "Completed Tasks", field: "completedTasks", color: "#8b5cf6" },
+      { label: "Pending Tasks", field: "pendingTasks", color: "#f59e0b" },
+    ];
+
+    // ---------- QUICK ACTION CARDS ----------
+    const quickActions = [
+      {
+        title: 'Manage Users',
+        description: 'View and manage registered users',
+        icon: '👥',
+        link: '/manage-users',
+        gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      },
+      {
+        title: 'Applications',
+        description: 'Review and process applications',
+        icon: '📋',
+        link: '/manage-applications',
+        gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+      },
+      {
+        title: 'Attendance',
+        description: 'Punch your daily attendance',
+        icon: '🕒',
+        link: '/employee-att',
+        gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+      },
+      {
+        title: 'Reports',
+        description: 'View analytics and reports',
+        icon: '📊',
+        link: '/employee-reports',
+        gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+      }
+    ];
+
+    // ---------- DAILY ANALYSIS ----------
+    const dailyAnalysis = [
+      { icon: "📝", label: "Applications Processed", value: 23, color: "#667eea" },
+      { icon: "👤", label: "Users Helped", value: 45, color: "#f093fb" },
+      { icon: "📞", label: "Calls Attended", value: 12, color: "#4facfe" },
+      { icon: "✉️", label: "Emails Responded", value: 34, color: "#10b981" },
+      { icon: "👥", label: "Meetings Attended", value: 3, color: "#f59e0b" },
+    ];
+
+    // ---------- GREETING CONFIGURATION ----------
+    const greetingConfig = {
+      morning: { text: 'Good Morning', icon: '👋', hourStart: 0, hourEnd: 12 },
+      afternoon: { text: 'Good Afternoon', icon: '👋', hourStart: 12, hourEnd: 17 },
+      evening: { text: 'Good Evening', icon: '👋', hourStart: 17, hourEnd: 24 }
+    };
+
+    // ---------- STATUS COLORS ----------
+    const statusColors = {
+      'present': '#10b981',
+      'absent': '#ef4444',
+      'Active': '#10b981',
+      'Inactive': '#6b7280'
+    };
+
+    // ---------- SECTION TITLES ----------
+    const sectionTitles = {
+      profile: '📋 Employee Profile',
+      workDay: '⏰ Work Day Status',
+      performance: '📈 Performance Tracker',
+      todoList: '✅ To-Do List',
+      dailyAnalysis: '📊 Daily Analysis Report',
+      quickActions: '🚀 Quick Actions'
+    };
+
+    // ---------- PRIORITY COLORS ----------
+    const priorityColors = {
+      high: '#ef4444',
+      medium: '#f59e0b',
+      low: '#10b981'
+    };
+
+    // ---------- EMPTY STATES ----------
+    const emptyStates = {
+      tasks: {
+        icon: '📭',
+        message: 'No tasks assigned for today'
+      }
+    };
+
     // ---------- FINAL RESPONSE ----------
     res.json({
       success: true,
@@ -318,6 +427,20 @@ exports.getDashboard = async (req, res) => {
       workDayStatus,
       performance: performanceStats,
       todaysTasks: tasks,
+      
+      // UI Configuration
+      uiConfig: {
+        profileFields,
+        workDayFields,
+        performanceFields,
+        quickActions,
+        dailyAnalysis,
+        greetingConfig,
+        statusColors,
+        sectionTitles,
+        priorityColors,
+        emptyStates
+      }
     });
   } catch (error) {
     console.error("Dashboard fetch error:", error);
