@@ -6,6 +6,9 @@ const ApplyInsuranceApplication = require("../model/applyInsurance");
 const JanArogyaApplication = require("../model/janArogyaApplication");
 const JanArogyaApply = require("../model/janArogyaApply");
 const sevaApplication=require("../model/sevaApplication")
+
+const Task = require("../model/taskSchema");
+const Attendance = require("../model/attendance");
 const moment = require("moment"); // for date filtering
 const patient=require("../model/patient")
 exports.getEmployeeProfile = async (req, res) => {
@@ -232,3 +235,93 @@ exports.getAppliedByMe=async(req,res)=>{
       return res.status(400).json({message:error.message})
      }
 }
+// controllers/dashboardController.js
+
+
+exports.getDashboard = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // ---------- PROFILE ----------
+    const user = await User.findById(userId).select("-password");
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    // ---------- WORKDAY STATUS ----------
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize date
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    let record = await Attendance.findOne({
+    user: userId,
+    $expr: {
+        $eq: [
+            { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            new Date().toISOString().slice(0, 10)
+        ]
+    }
+});
+
+    let workDayStatus;
+    if (!record) {
+      workDayStatus = {
+        status: "absent",
+        checkInTime: "-",
+        hoursWorked: "0h",
+        breaksTaken: 0,
+        remainingHours: "8h",
+      };
+    } else {
+      const checkInTime = record.checkIn
+        ? record.checkIn.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : "-";
+
+      let hoursWorked = 0;
+      if (record.checkIn) {
+        const endTime = record.checkOut ? record.checkOut : new Date();
+        hoursWorked = ((endTime - record.checkIn) / (1000 * 60 * 60)).toFixed(2);
+      }
+
+      let remainingHours = (8 - hoursWorked).toFixed(2);
+      if (remainingHours < 0) remainingHours = 0;
+
+      workDayStatus = {
+        status: record.status,
+        checkInTime,
+        hoursWorked: `${hoursWorked}h`,
+        breaksTaken: record.breaks ? record.breaks.length : 0,
+        remainingHours: `${remainingHours}h`,
+      };
+    }
+
+    // ---------- PERFORMANCE ----------
+    const total = await Task.countDocuments({ employee: userId });
+    const completed = await Task.countDocuments({ employee: userId, status: "COMPLETED" });
+    const performance = total > 0 ? ((completed * 100) / total).toFixed(2) : "0.00";
+
+    const performanceStats = {
+      totalTasks: total,
+      completedTasks: completed,
+      performancePercentage: performance,
+    };
+
+    // ---------- TODAY'S TASKS ----------
+    const tasks = await Task.find({
+      employee: userId,
+      assignedDate: { $gte: today, $lt: tomorrow },
+    });
+
+    // ---------- FINAL RESPONSE ----------
+    res.json({
+      success: true,
+      profile: user,
+      workDayStatus,
+      performance: performanceStats,
+      todaysTasks: tasks,
+    });
+  } catch (error) {
+    console.error("Dashboard fetch error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+

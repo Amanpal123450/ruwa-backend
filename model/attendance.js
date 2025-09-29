@@ -15,6 +15,12 @@ const attendanceSchema = new mongoose.Schema({
   checkOut: {
     type: Date,
   },
+  breaks: [
+  {
+    start: Date,
+    end: Date
+  }
+],
   status: {
     type: String,
     enum: ["present", "late", "absent", "early-departure", "paid-leave", "unpaid-leave"],
