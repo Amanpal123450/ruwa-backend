@@ -97,6 +97,8 @@ const janarogyaFirst=require("./routes//kendraFirstPage")
 const janarogyaSecond=require("./routes/kendraSecondPage")
 const sevaApplication=require("./routes/sevaRoutes")
 const employeeData=require("./routes/EmpData")
+const wallet=require("./routes/walletRoutes")
+const manageusersData=require("./routes/manage-usersData")
 
 
 
@@ -124,6 +126,14 @@ app.use("/api/service-routes",serviceRoutes)
 app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
+
+// manageusersData
+
+app.use("/api/manageusersData",manageusersData);
+
+
+// wallet
+app.use("/api/wallet", wallet);
 
 // employeeData
 app.use("/api/employeeData",employeeData);

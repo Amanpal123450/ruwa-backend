@@ -17,6 +17,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "country-state-city": "^3.2.1",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-fileupload": "^1.5.2",
@@ -30,6 +31,7 @@
     "nodemailer": "^7.0.6",
     "otp-generator": "^4.0.1",
     "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
     "socket.io": "^4.8.1",
     "unirest": "^0.6.0"
   }
