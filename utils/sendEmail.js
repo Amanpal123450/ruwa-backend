@@ -1,21 +1,47 @@
+// const nodemailer = require("nodemailer");
+// require('dotenv').config();
+// const transporter = nodemailer.createTransport({
+//   service: "gmail", // or use SMTP like: host, port, secure
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+
+// exports.sendEmail = async (to, subject, text) => {
+//   try {
+//     await transporter.sendMail({
+//       from: `"HR System" <${process.env.EMAIL_USER}>`,
+//       to,
+//       subject,
+//       text,
+//       html: text || "", 
+//     });
+//     console.log("✅ Email sent to:", to);
+//   } catch (error) {
+//     console.error("❌ Email error:", error);
+//     throw new Error("Failed to send email");
+//   }
+// };
 const nodemailer = require("nodemailer");
-require('dotenv').config();
+require("dotenv").config();
+
 const transporter = nodemailer.createTransport({
-  service: "gmail", // or use SMTP like: host, port, secure
+  service: "gmail", // Or use SMTP config
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
-exports.sendEmail = async (to, subject, text) => {
+exports.sendEmail = async (to, subject, htmlContent) => {
   try {
     await transporter.sendMail({
-      from: `"HR System" <${process.env.EMAIL_USER}>`,
+      from: `"Jan Arogya Kendra" <${process.env.EMAIL_USER}>`,
       to,
       subject,
-      text,
-      html: text || "", 
+      text: "This is an HTML email. Please enable HTML view.", // plain fallback
+      html: htmlContent, // send your template here
     });
     console.log("✅ Email sent to:", to);
   } catch (error) {
