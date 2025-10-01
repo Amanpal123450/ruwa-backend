@@ -9,4 +9,4 @@ router.post("/",auth,authorizeRole("ADMIN"), testimonialController.createTestimo
 router.put("/:id",auth,authorizeRole("ADMIN"), testimonialController.updateTestimonial);
 router.delete("/:id",auth,authorizeRole("ADMIN"), testimonialController.deleteTestimonial);
 
-module.exports = router;
+module.exports = router
