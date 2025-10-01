@@ -48,4 +48,4 @@ exports.sendEmail = async (to, subject, htmlContent) => {
     console.error("❌ Email error:", error);
     throw new Error("Failed to send email");
   }
-}
+};
