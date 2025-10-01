@@ -1,3 +1,4 @@
+const User=require("../model/user")
 const janArogyaApply = require("../model/janArogyaApply");
 const JanArogyaApply = require("../model/janArogyaApply");
 const { uploadToCloudinary } = require("../utils/imageUploader");
@@ -188,8 +189,10 @@ exports.employeeupdateJanArogyaStatus = async (req, res) => {
 
 exports.verifyPayment = async (req, res) => {
   try {
-    const {  aadhaar,paymentId } = req.body;
-   console.log(aadhaar,paymentId)
+   
+    
+    const {  paymentId ,aadhaar} = req.body;
+   console.log(aadhaar,paymentId);
     if ( !paymentId || !aadhaar) {
       return res.status(400).json({ message: "aadhaar and paymentId are required" });
     }
