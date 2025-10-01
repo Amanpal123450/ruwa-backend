@@ -66,6 +66,7 @@ const janArogyaApplySchema = new mongoose.Schema({
     area: String,
     locationType: String,
     address: String,
+    
   },
   siteInMind: { type: String },
   planToRent: { type: String },

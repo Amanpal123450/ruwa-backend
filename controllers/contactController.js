@@ -16,7 +16,7 @@ exports.submitContact = async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 };
- exports.getAllEnquiry = async (req, res) => {
+exports.getAllEnquiry = async (req, res) => {
    try {
      const entries = await ContactMessage.find().sort({ createdAt: -1 }); // latest first
      res.status(200).json(entries);
