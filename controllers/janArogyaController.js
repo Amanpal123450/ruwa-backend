@@ -133,7 +133,7 @@ exports.checkJanarogya = async (req, res) => {
 exports.getUserApplication = async (req, res) => {
   const id = req.user.id;
   try {
-    const apps = await JanArogyaApplication.find({ appliedBy: id });
+    const apps = await JanArogyaApplication.find({ appliedBy: id,status:"APPROVED"  });
     res.json(apps);
   } catch (err) {
     res
