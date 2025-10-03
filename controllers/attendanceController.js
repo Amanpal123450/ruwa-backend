@@ -156,3 +156,69 @@ exports.getWorkDayStatus = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+exports.getAttendanceSummary = async (req, res) => {
+  try {
+    const userId = req.user.id; // from auth middleware (JWT)
+    const { month, year } = req.query;
+
+    if (!month || !year) {
+      return res.status(400).json({ success: false, message: "Month and year are required" });
+    }
+
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59);
+
+    const records = await Attendance.find({
+      user: userId,
+      date: { $gte: startDate, $lte: endDate }
+    });
+
+    let present = 0,
+      lateArrival = 0,
+      absent = 0,
+      leftEarly = 0,
+      paidLeave = 0,
+      totalWorkingHours = 0;
+
+    // Required hours = 8 * total working days (you can adjust this)
+    const workingDaysCount = records.length;
+    const requiredHours = workingDaysCount * 8;
+
+   records.forEach((rec) => {
+  switch (rec.status) {
+    case "present":
+    case "late":            
+    case "early-departure":   
+      present++;
+      break;
+    case "absent":
+      absent++;
+      break;
+    case "paid-leave":
+      paidLeave++;
+      break;
+  }
+
+      totalWorkingHours += rec.workingHours || 0;
+    });
+
+    const balance = totalWorkingHours - requiredHours;
+
+    res.json({
+      success: true,
+      summary: {
+        present,
+        lateArrival,
+        absent,
+        leftEarly,
+        paidLeave,
+        totalWorkingHours,
+        requiredHours,
+        balance,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching summary:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
