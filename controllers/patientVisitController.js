@@ -43,17 +43,55 @@ exports.createPatient = async (req, res) => {
 
 // 📌 Get all patients
 exports.getPatients = async (req, res) => {
-  const id=req.user.id
+  const id = req.user.id;
+
   try {
-    const patients = await patient.find({appliedBy:id}).sort({ createdAt: -1 });
+    // today range
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // fetch today patients only
+    const patients = await patient.find({
+      appliedBy: id,
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    }).sort({ createdAt: -1 });
+
+    // counts for today
+    const activePatients = await patient.countDocuments({
+      appliedBy: id,
+      status: "active",
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    });
+
+    const pendingPatients = await patient.countDocuments({
+      appliedBy: id,
+      status: "pending",
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    });
+
+    const inactivePatients = await patient.countDocuments({
+      appliedBy: id,
+      status: "inactive",
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    });
+
     res.status(200).json({
       success: true,
-      users: patients
+      todayPatients: patients,   // 👈 only today patients list
+      activeUsers: activePatients,
+      pendingUsers: pendingPatients,
+      inactiveUsers: inactivePatients,
+      totalToday: patients.length   // 👈 optional: total today patients
     });
+
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
 // 📌 Update patient
 exports.updatePatient = async (req, res) => {
