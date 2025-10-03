@@ -525,3 +525,77 @@ exports.getAdminEmployeeAppliedUsers = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
+exports.getAdminUserServices = async (req, res) => {
+  try {
+    // Get employee ID from request parameters instead of req.user._id
+    const { phone } = req.params; // For route like /admin/employee/:employeeId/applied-users
+    // OR use const employeeId = req.query.employeeId; for query parameter
+    
+    // Validate employee ID
+    if (!phone) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Phone  is required" 
+      });
+    }
+
+    // Fetch all applications with populated data for the specific employee
+    const ambulance = await AmbulanceBooking.find({ phone });
+    const insurance = await ApplyInsuranceApplication.find({ phone });
+    const janArogya = await JanArogyaApplication.find({ mobile: phone });
+    const janArogyaApply = await JanArogyaApply.find({  phone });
+
+    // Flatten into desired format
+    const appliedUsers = [
+      ...ambulance.map(a => ({
+        name: a.fullName,
+        email: a.email,
+        phone: a.phone,
+        status: a.status,
+        hospitalPreference: a.hospitalPreference,
+        appointmentDate: a.appointmentDate,
+        preferredTime: a.preferredTime,
+        submittedAt: a.submittedAt,
+        service: "AmbulanceBooking"
+      })),
+      ...insurance.map(i => ({
+        name: i.fullName,
+        email: i.email,
+        aadhaarNumber: i.aadhaarNumber,
+        district: i.district,
+        dob: i.dob,
+        phone: i.phone || "Not Provided",
+        status: i.status,
+        service: "ApplyInsurance",
+        insuranceType: i.insuranceType
+      })),
+      ...janArogya.map(j => ({
+        name: j.name,
+        email: j.email || "Not Provided",
+        phone: j.phone || "Not Provided",
+        state: j.state,
+        district: j.district,
+        status: j.status,
+        service: "JanArogyaApplication"
+      })),
+      ...janArogyaApply.map(j => ({
+        name: j.name,
+        email: j.email || "Not Provided",
+        phone: j.phone,
+        businessType: j.businessType,
+        investmentCapacity: j.investmentCapacity,
+        proposedLocation: j.proposedLocation,
+        franchiseCategory: j.franchiseCategory,
+        category: j.category,
+        status: j.status,
+        service: "JanArogyaApply"
+      }))
+    ];
+
+    res.json({ success: true, appliedUsers });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
