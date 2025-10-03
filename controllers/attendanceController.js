@@ -221,4 +221,4 @@ exports.getAttendanceSummary = async (req, res) => {
     console.error("Error fetching summary:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
-};
+}
