@@ -93,13 +93,14 @@ exports.bookAmbulanceForUser = async (req, res) => {
 // USER: Get own bookings
 exports.getUserBookings = async (req, res) => {
   try {
-    const phone = req.body.phone;
-    const bookings = await AmbulanceBooking.find({ phone});
-    res.json(bookings);
+    const phone = req.user.phone; // <-- get phone from logged-in user
+    const bookings = await AmbulanceBooking.find({ phone });
+    res.json({ bookings }); // wrap in an object for consistency
   } catch (err) {
     res.status(500).json({ message: "Error fetching bookings", error: err.message });
   }
 };
+
 
 // EMPLOYEE: Get bookings they submitted
 exports.getEmployeeBookings = async (req, res) => {
