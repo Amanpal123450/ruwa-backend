@@ -89,7 +89,7 @@ const buildApplication = async (req, res) => {
 // Wrappers
 exports.userApply = (req, res) => buildApplication(req, res);
 exports.employeeApply = (req, res) => buildApplication(req, res);
-
+exports.adminOfflineApply = (req, res) => buildApplication(req, res);
 // USER: Get own applications (applications for them)
 exports.getMyApplications = async (req, res) => {
   try {
@@ -123,6 +123,17 @@ exports.getAllApplications = async (req, res) => {
     res.status(500).json({ message: "Error fetching all applications", error: err.message });
   }
 };
+exports.getApprovedApplications = async (req, res) => {
+  try {
+    // Find only applications where status is "approved"
+    const approvedApps = await JanArogyaApply.find({ status: "APPROVED" });
+
+    res.json(approvedApps);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching approved applications", error: err.message });
+  }
+};
+
 exports.checkJanarogyaApply = async (req, res) => {
   try {
     const id = req.query.id; // 👈 GET query se aayega
