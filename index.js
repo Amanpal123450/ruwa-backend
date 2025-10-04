@@ -116,7 +116,7 @@ app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin",dashBoardRoutes);
 app.use("/api/u",profileRoutes);
-app.use("/api/uu",employeeImg);
+app.use("/api/update",employeeImg);
 app.use("/api/attendance",attendanceRoutes);
 app.use("/api/employee",patientRoutes);
 app.use("/api/location", locationRoutes);
