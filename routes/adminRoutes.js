@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser, updateEmployee, getEmployeeById, getEmployeeAttendance, getAdminEmployeeAppliedUsers } = require("../controllers/adminController");
+const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser, updateEmployee, getEmployeeById, getEmployeeAttendance, getAdminEmployeeAppliedUsers, getAdminUserServices } = require("../controllers/adminController");
 const { auth, authorizeRole } = require("../middlewares/auth");
 
 
@@ -12,6 +12,7 @@ const { auth, authorizeRole } = require("../middlewares/auth");
 router.get("/employees",auth,authorizeRole("ADMIN") ,getAllEmployees);
 router.get("/employee/:id",auth,authorizeRole("ADMIN"), getEmployeeById);
 router.get("/applied-by/:employeeId",auth,authorizeRole("ADMIN"), getAdminEmployeeAppliedUsers);
+router.get("/applied-phone/:phone",auth,authorizeRole("ADMIN"), getAdminUserServices);
 router.get("/employee/:id/attendance", auth,authorizeRole("ADMIN"), getEmployeeAttendance);
 
 // Update Employee
