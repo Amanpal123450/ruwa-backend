@@ -6,7 +6,7 @@ const getDashboard = async (req, res) => {
     const dashboard = await Dashboard.findOne(); // only one dashboard document
     res.json(dashboard);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
 };
 
