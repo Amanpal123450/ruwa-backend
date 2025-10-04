@@ -13,7 +13,7 @@ exports.getProfile = async (req, res) => {
     res.json({ profile });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" })
   }
 };
 
