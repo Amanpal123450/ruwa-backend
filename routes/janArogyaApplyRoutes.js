@@ -9,7 +9,8 @@ const {
   updateJanArogyaStatus, 
   employeeupdateJanArogyaStatus,
   verifyPayment,
-  checkJanarogyaApply
+  checkJanarogyaApply,
+  getApprovedApplications
 } = require("../controllers/janArogyaApplyController");
 
 const { auth, authorizeRole } = require("../middlewares/auth");
@@ -31,6 +32,12 @@ router.post(
   authorizeRole("EMPLOYEE"),
   employeeApply
 );
+router.post(
+  "/admin/offline-apply",
+  auth,
+  authorizeRole("EMPLOYEE"),
+  employeeApply
+);
 router.get("/check",auth,checkJanarogyaApply)
 // USER: Get their own apps
 router.get("/my-applications", auth, authorizeRole("USER"), getMyApplications);
@@ -40,6 +47,7 @@ router.get("/employee/applications", auth, authorizeRole("EMPLOYEE"), getEmploye
 
 // ADMIN: Get all
 router.get("/admin/all", auth, authorizeRole("ADMIN"), getAllApplications);
+router.get("/admin/aprooved", auth, authorizeRole("ADMIN"), getApprovedApplications);
 
 // ADMIN: Update status
 router.put("/admin/status/:id", auth, authorizeRole("ADMIN"), updateJanArogyaStatus);
