@@ -99,7 +99,7 @@ const sevaApplication=require("./routes/sevaRoutes")
 // const employeeData=require("./routes/EmpData")
 const wallet=require("./routes/walletRoutes")
 const manageusersData=require("./routes/manage-usersData")
-
+const jobRoutes=require("./routes/jobRoutes")
 
 
 app.use("/api/popup", popupRoutes);
@@ -126,7 +126,7 @@ app.use("/api/service-routes",serviceRoutes)
 app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
-
+app.use('/api/jobs', jobRoutes);
 // manageusersData
 
 app.use("/api/manageusersData",manageusersData);
