@@ -26,6 +26,8 @@ router.get(
   insCtrl.getUserInsuranceApplications
 );
 
+router.get("/check",auth,insCtrl.checkJanarogya)
+
 /**
  * ================================
  * EMPLOYEE ROUTES
