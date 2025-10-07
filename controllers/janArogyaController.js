@@ -120,6 +120,7 @@ exports.checkJanarogya = async (req, res) => {
     if (application && application.status === "PENDING") {
       return res.status(200).json({
         msg: "USER ALREADY EXISTS",
+        application,
         status: true,
       });
     }
