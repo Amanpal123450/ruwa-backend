@@ -10,7 +10,7 @@ const {
   employeeupdateJanArogyaStatus,
   verifyPayment,
   checkJanarogyaApply,
-  getApprovedApplications
+  getApprovedApplications,adminOfflineApply
 } = require("../controllers/janArogyaApplyController");
 
 const { auth, authorizeRole } = require("../middlewares/auth");
@@ -35,8 +35,8 @@ router.post(
 router.post(
   "/admin/offline-apply",
   auth,
-  authorizeRole("EMPLOYEE"),
-  employeeApply
+  authorizeRole("ADMIN"),
+  adminOfflineApply
 );
 router.get("/check",auth,checkJanarogyaApply)
 // USER: Get their own apps
