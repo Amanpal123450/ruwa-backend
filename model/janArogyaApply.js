@@ -93,7 +93,9 @@ const janArogyaApplySchema = new mongoose.Schema({
     enum: ["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"],
     default: "PENDING",
   },
-
+     applicationId:{type:String,required:true},
+      enrollmentNo:{type:String,required:true},
+      submissionDate:{type:String,required:true},
   appliedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 }, { timestamps: true });
 

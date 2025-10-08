@@ -7,6 +7,9 @@ const { uploadToCloudinary } = require("../utils/imageUploader");
 const buildApplication = async (req, res) => {
   try {
     const {
+      applicationId,
+      enrollmentNo,
+      submissionDate,
       title,
       name,
       aadhaar,
@@ -52,6 +55,9 @@ const buildApplication = async (req, res) => {
     }
 
     const application = new JanArogyaApply({
+      applicationId,
+      enrollmentNo,
+      submissionDate,
       title,
       name,
       aadhaar,
@@ -223,6 +229,7 @@ exports.checkJanarogyaApply = async (req, res) => {
         msg: "USER ALREADY EXISTS",
         application,
         status: true,
+        
       });
     }
 
