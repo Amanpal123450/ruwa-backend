@@ -7,7 +7,7 @@ const { sendEmail } = require("../utils/sendEmail");
 const QRCode = require("qrcode");
 const buildApplication = async (req, res) => {
   try {
-    const { name, aadhar, mobile, state, district, DOB, gender, email } =
+    const { name, aadhar, mobile, state, district, DOB, gender, email,applicationId,submissionDate } =
       req.body;
     const { income_certificate, caste_certificate, ration_id, profilePicUser } =
       req.files || {}
@@ -24,6 +24,10 @@ const buildApplication = async (req, res) => {
       DOB,
       gender,
       email,
+      reciept:{
+        applicationId:applicationId,
+        submissionDate:submissionDate,
+      },
       appliedBy: req.user.id,
     });
 
