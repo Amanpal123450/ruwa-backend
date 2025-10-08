@@ -7,7 +7,7 @@ const { sendEmail } = require("../utils/sendEmail");
 const QRCode = require("qrcode");
 const buildApplication = async (req, res) => {
   try {
-    const { name, aadhar, mobile, state, district, DOB, gender, email } =
+    const { name, aadhar, mobile, state, district, DOB, gender, email,applicationId,submissionDate } =
       req.body;
     const { income_certificate, caste_certificate, ration_id, profilePicUser } =
       req.files || {}
@@ -24,6 +24,10 @@ const buildApplication = async (req, res) => {
       DOB,
       gender,
       email,
+      reciept:{
+        applicationId:applicationId,
+        submissionDate:submissionDate,
+      },
       appliedBy: req.user.id,
     });
 
@@ -114,14 +118,25 @@ exports.checkJanarogya = async (req, res) => {
     }
 
     if (application && application.status === "PENDING") {
-      return res.status(200).json({ msg: "USER ALREADY EXISTS" });
+      return res.status(200).json({
+        msg: "USER ALREADY EXISTS",
+        application,
+        status: true,
+      });
     }
 
     if (application && application.status === "APPROVED") {
-      return res.status(200).json({ msg: "APPROVED", application });
+      return res.status(200).json({
+        msg: "APPROVED",
+        application,
+        status: true,
+      });
     }
 
-    return res.status(404).json({ msg: "USER NOT FOUND" });
+    return res.status(404).json({
+      msg: "USER NOT FOUND",
+      status: false,
+    });
   } catch (e) {
     return res.status(400).json({ error: e.message });
   }
