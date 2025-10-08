@@ -96,6 +96,44 @@ exports.applyInsurance = async (req, res) => {
   return buildInsuranceApplication(req, res);
 };
 
+exports.checkJanarogya = async (req, res) => {
+  try {
+    const id = req.query.id; // 👈 GET query se aayega
+    const userId = req.user.id;
+
+    let application;
+
+    if (id) {
+      application = await JanArogyaApplication.findById(id);
+    } else {
+      application = await ApplyInsurance.findOne({ appliedBy: userId });
+    }
+
+    if (application && application.status === "PENDING") {
+      return res.status(200).json({
+        msg: "USER ALREADY EXISTS",
+        application,
+        status: true,
+      });
+    }
+
+    if (application && application.status === "APPROVED") {
+      return res.status(200).json({
+        msg: "APPROVED",
+        application,
+        status: true,
+      });
+    }
+
+    return res.status(404).json({
+      msg: "USER NOT FOUND",
+      status: false,
+    });
+  } catch (e) {
+    return res.status(400).json({ error: e.message });
+  }
+};
+
 // USER: Get own applications
 exports.getUserInsuranceApplications = async (req, res) => {
   try {

@@ -99,7 +99,7 @@ const sevaApplication=require("./routes/sevaRoutes")
 // const employeeData=require("./routes/EmpData")
 const wallet=require("./routes/walletRoutes")
 const manageusersData=require("./routes/manage-usersData")
-
+const jobRoutes=require("./routes/jobRoutes")
 
 
 app.use("/api/popup", popupRoutes);
@@ -112,6 +112,7 @@ app.use("/api/services/janarogya", janArogyaRoutes);
 app.use("/api/services/ambulance-booking", ambulanceRoutes);
 app.use("/api/services/apply-insurance", applyInsurance);
 app.use("/api/services/apply-kendra", applyKendra);
+app.use("/api/services/sevaApplication",sevaApplication);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin",dashBoardRoutes);
@@ -126,7 +127,7 @@ app.use("/api/service-routes",serviceRoutes)
 app.use("/api/hero-routes",heroroutes)
 app.use("/api/home-routes",homepageRoutes)
 app.use("/api/feedback", feedbackRoutes);
-
+app.use('/api/jobs', jobRoutes);
 // manageusersData
 
 app.use("/api/manageusersData",manageusersData);
@@ -139,7 +140,7 @@ app.use("/api/wallet", wallet);
 // app.use("/api/employeeData",employeeData);
 
 // sevaApplication
-app.use("/api/services/sevaApplication",sevaApplication);
+
 
 
 // insuranceData

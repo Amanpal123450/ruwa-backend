@@ -13,18 +13,7 @@ const {
 } = require("../controllers/sevaController");
 
 const { auth, authorizeRole } = require("../middlewares/auth");
-// const multer = require("multer");
 
-// Multer configuration for file uploads
-// const upload = multer({ storage: multer.memoryStorage() });
-
-// Payment verification route
-// router.post("/verify-payment", 
-//    auth, 
-//    authorizeRole("EMPLOYEE", "USER"), 
-// //    upload.single("screenshot"), // For payment screenshot
-//    verifySwabhimanPayment
-// );
 
 // USER applies for themselves
 router.post(
