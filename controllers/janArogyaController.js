@@ -10,7 +10,7 @@ const buildApplication = async (req, res) => {
     const { name, aadhar, mobile, state, district, DOB, gender, email } =
       req.body;
     const { income_certificate, caste_certificate, ration_id, profilePicUser } =
-      req.files || {};
+      req.files || {}
 
     const existing = await JanArogyaApplication.findOne({ aadhar });
     if (existing) return res.status(400).json({ message: "Already applied." });
