@@ -197,7 +197,7 @@ exports.updateApplicationStatus = async (req, res) => {
     );
     
     if (!app) {
-      return res.status(404).json({ message: "Application not found" });
+      return res.status(404).json({ message: "Application not found" })
     }
     
     if (req.body.status.toLowerCase() === "approved") {
