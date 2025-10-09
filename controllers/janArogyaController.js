@@ -15,22 +15,23 @@ const buildApplication = async (req, res) => {
     if (existing) return res.status(400).json({ message: "Already applied." });
 
     // Generate unique RUWA card number
-   // Get the last application
-let lastApplication = await JanArogyaApplication.findOne({}, {}, { sort: { createdAt: -1 } });
+    // Get the last application
+    let lastApplication = await JanArogyaApplication.findOne({}, {}, { sort: { createdAt: -1 } });
 
-// Default number if no previous application exists
-let lastNumber = lastApplication?.cardNumber?.replace("RUWA", "") || "123412341234"; // 12 digits
+    // Default number if no previous application exists
+    let lastNumber = lastApplication?.card_no?.replace("RUWA", "") || "123412341234"; // ✅ card_no (not cardNumber)
 
-// Convert to number safely
-let numericLast = BigInt(lastNumber); // use BigInt to handle very large numbers
-let newNumber = (numericLast + 1n).toString().padStart(12, "0"); // increment and pad to 12 digits
+    // Convert to number safely
+    let numericLast = BigInt(lastNumber);
+    let newNumber = (numericLast + 1n).toString().padStart(12, "0");
 
-// Final card number
-const card_no = `RUWA${newNumber}`;
+    // Final card number
+    const card_no = `RUWA${newNumber}`;
+    const NewAadhar = `RUWA${aadhar}`;
 
     const app = new JanArogyaApplication({
       name,
-      aadhar,
+      aadhar: NewAadhar,
       mobile,
       state,
       district,
@@ -73,7 +74,7 @@ const card_no = `RUWA${newNumber}`;
       state: app.state,
       district: app.district,
       aadhar: app.aadhar,
-      cardNumber: app.cardNumber
+      cardNumber: app.card_no // ✅ card_no (not cardNumber)
     };
     const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData));
     if (qrCodeUrl) app.Qr = qrCodeUrl;
