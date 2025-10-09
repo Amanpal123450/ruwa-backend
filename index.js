@@ -107,7 +107,7 @@ const janarogyaFirst = require("./routes/kendraFirstPage");
 const janarogyaSecond = require("./routes/kendraSecondPage");
 const sevaApplication = require("./routes/sevaRoutes");
 // const employeeData=require("./routes/Emp_Service_static/EmpServiceHome")
-
+const ekycRoutes=require("./routes/E-KYCRoutes")
 const wallet = require("./routes/walletRoutes");
 // const manageusersData = require("./routes/manage-usersData");
 // const jobRoutes = require("./routes/jobRoutes");
