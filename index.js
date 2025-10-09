@@ -42,8 +42,8 @@ app.use(fileUpload({
   limits: { fileSize: 10 * 1024 * 1024 },
   abortOnLimit: true,
 }));
-app.use(express.json()); // <--- must be here
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 
@@ -106,7 +106,7 @@ const ekycRoutes=require("./routes/E-KYCRoutes")
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
 app.use("/api/app-dashboard/", AppDashboardRoutes);
-app.use("/api/services/e-kyc",ekycRoutes)
+
 app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/services/janarogya", janArogyaRoutes);
@@ -173,7 +173,7 @@ app.use('/api/aboutFeature', aboutFeature);
 app.use("/api/service-card",serviceCardRoutes)
 app.use("/api/service-Features",serviceFeatures)
 app.use("/api/services", serviceHomepageRoutes);
-
+app.use("/api/ekyc",ekycRoutes)
 // Models
 const User = require("./model/user");
 const SECRET = process.env.SECRET_KEY;

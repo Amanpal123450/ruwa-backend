@@ -288,20 +288,20 @@ const ekycSchema = {
   },
 
   // 360° Videos
-  video360Interior: {
-    type: String,
-    required: true
-  },
-  video360InteriorName: {
-    type: String
-  },
-  video360Exterior: {
-    type: String,
-    required: true
-  },
-  video360ExteriorName: {
-    type: String
-  },
+  // video360Interior: {
+  //   type: String,
+  //   required: true
+  // },
+  // video360InteriorName: {
+  //   type: String
+  // },
+  // video360Exterior: {
+  //   type: String,
+  //   required: true
+  // },
+  // video360ExteriorName: {
+  //   type: String
+  // },
 
   // Section 6: Documents & Financial
   annualIncome: {
