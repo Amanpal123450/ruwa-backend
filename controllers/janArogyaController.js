@@ -15,10 +15,18 @@ const buildApplication = async (req, res) => {
     if (existing) return res.status(400).json({ message: "Already applied." });
 
     // Generate unique RUWA card number
-    let lastApplication = await JanArogyaApplication.findOne({}, {}, { sort: { createdAt: -1 } });
-    let lastNumber = lastApplication?.cardNumber?.slice(4) || "123412341234"; // get last 8 digits
-    let newNumber = (parseInt(lastNumber) + 1).toString().padStart(12, "0"); // increment and pad
-    const card_no = `RUWA${newNumber}`;
+   // Get the last application
+let lastApplication = await JanArogyaApplication.findOne({}, {}, { sort: { createdAt: -1 } });
+
+// Default number if no previous application exists
+let lastNumber = lastApplication?.cardNumber?.replace("RUWA", "") || "123412341234"; // 12 digits
+
+// Convert to number safely
+let numericLast = BigInt(lastNumber); // use BigInt to handle very large numbers
+let newNumber = (numericLast + 1n).toString().padStart(12, "0"); // increment and pad to 12 digits
+
+// Final card number
+const card_no = `RUWA${newNumber}`;
 
     const app = new JanArogyaApplication({
       name,
