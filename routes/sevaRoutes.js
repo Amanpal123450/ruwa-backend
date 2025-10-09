@@ -34,7 +34,7 @@ router.post(
 );
 
 // Check application status
-router.get("/check", auth, checkSwabhimanApply);
+router.get("/check", auth ,authorizeRole("USER"), checkSwabhimanApply);
 
 // USER: Get their own applications
 router.get("/my-applications", 
