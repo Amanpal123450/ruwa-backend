@@ -1,9 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
-const { cloudinaryConnect } = require('./config/cloudinary'); 
-const { connectDB } = require('./connection');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+require("dotenv").config();
+const { cloudinaryConnect } = require("./config/cloudinary");
+const { connectDB } = require("./connection");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const http = require("http");
@@ -20,32 +20,44 @@ const PORT = process.env.PORT || 8000;
 // create http server
 const server = http.createServer(app);
 
-
 // create socket.io server
 const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 
 
-app.use(cors({
-  origin: ["http://localhost:3000","http://localhost:3001","https://ruwaindia.in","https://ruwa-india-admin.vercel.app","https://ruwa-user-employee-frontend.vercel.app"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: "/tmp",
-  limits: { fileSize: 10 * 1024 * 1024 },
-  abortOnLimit: true,
-}));
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-app.use(cookieParser());
 
+
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://ruwaindia.in",
+      "https://ruwa-india-admin.vercel.app",
+      "https://ruwa-user-employee-frontend.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp",
+    limits: { fileSize: 10 * 1024 * 1024 },
+    abortOnLimit: true,
+  })
+);
+app.use(express.json()); // <--- must be here
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 connectDB();
 
@@ -55,36 +67,34 @@ const popupRoutes = require("./routes/PopupRouter");
 const contactRoutes = require("./routes/contactRoutes");
 const janArogyaRoutes = require("./routes/janArogyaRoutes");
 const ambulanceRoutes = require("./routes/ambulanceBookingRoutes");
-const applyInsurance = require('./routes/applyInsuranceRoutes');
-const applyKendra = require('./routes/janArogyaApplyRoutes');
+const applyInsurance = require("./routes/applyInsuranceRoutes");
+const applyKendra = require("./routes/janArogyaApplyRoutes");
 const statesRouter = require("./routes/statesRouter");
 const userRoutes = require("./routes/userProfile");
 const employeeRoutes = require("./routes/employeeRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const dashBoardRoutes=require("./routes/dashBoardRoutes");
-const profileRoutes=require("./routes/profileRoutes");
-const attendanceRoutes=require("./routes/attendanceRoutes");
-const employeeImg=require("./routes/employeeProfileImage");
-const patientRoutes=require("./routes/patientRoutes");
-
+const dashBoardRoutes = require("./routes/dashBoardRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+const attendanceRoutes = require("./routes/attendanceRoutes");
+const employeeImg = require("./routes/employeeProfileImage");
+const patientRoutes = require("./routes/patientRoutes");
 
 const locationRoutes = require("./routes/locationsRoutes");
 
-const AppDashboardRoutes=require("./routes/AppDashboardRoute");
- 
+const AppDashboardRoutes = require("./routes/AppDashboardRoute");
 
-const slideRoutes= require("./routes/slidesRoutes");
-const testimonialsRoutes=require('./routes/testimonialsRoutes')
-const serviceRoutes=require("./routes/serviceRoutes")
-const heroroutes=require("./routes/heroRoutes")
-const homepageRoutes=require("./routes/homepageRoutes")
-const aboutRoute=require("./routes/about")
+const slideRoutes = require("./routes/slidesRoutes");
+const testimonialsRoutes = require("./routes/testimonialsRoutes");
+const serviceRoutes = require("./routes/serviceRoutes");
+const heroroutes = require("./routes/heroRoutes");
+const homepageRoutes = require("./routes/homepageRoutes");
+const aboutRoute = require("./routes/about");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 const serviceCardRoutes = require("./routes/servicesPageRouter/serviceCard");
-const serviceFeatures = require("./routes/servicesPageRouter/serviceFeatures")
+const serviceFeatures = require("./routes/servicesPageRouter/serviceFeatures");
 const serviceHomepageRoutes = require("./routes/servicesPageRouter/servicesHome");
 
-const contactSettingRoutes=require("./routes/contactSettingRoutes")
+const contactSettingRoutes = require("./routes/contactSettingRoutes");
 
 const aboutHome = require("./routes/aboutPageRoutes/aboutHome");
 const aboutWelcome = require("./routes/aboutPageRoutes/aboutPageWelcome");
@@ -93,14 +103,21 @@ const Janarogycard = require("./routes/JanarogycardData");
 const JansawvimanData = require("./routes/JansawvimanData");
 const ambulanceData = require("./routes/AmbulanceData");
 const insuranceData = require("./routes/insurancData");
-const janarogyaFirst=require("./routes//kendraFirstPage")
-const janarogyaSecond=require("./routes/kendraSecondPage")
-const sevaApplication=require("./routes/sevaRoutes")
-// const employeeData=require("./routes/EmpData")
-const wallet=require("./routes/walletRoutes")
+const janarogyaFirst = require("./routes/kendraFirstPage");
+const janarogyaSecond = require("./routes/kendraSecondPage");
+const sevaApplication = require("./routes/sevaRoutes");
+// const employeeData=require("./routes/Emp_Service_static/EmpServiceHome")
+
+const wallet = require("./routes/walletRoutes");
+// const manageusersData = require("./routes/manage-usersData");
+// const jobRoutes = require("./routes/jobRoutes");
+const employeeServiceHome = require("./routes/Emp_Service_static/EmpServiceHome");
+
+// const wallet=require("./routes/walletRoutes")
 const manageusersData=require("./routes/manage-usersData")
 const jobRoutes=require("./routes/jobRoutes")
-const ekycRoutes=require("./routes/E-KYCRoutes")
+// const ekycRoutes=require("./routes/E-KYCRoutes")
+
 
 
 app.use("/api/popup", popupRoutes);
@@ -113,37 +130,28 @@ app.use("/api/services/janarogya", janArogyaRoutes);
 app.use("/api/services/ambulance-booking", ambulanceRoutes);
 app.use("/api/services/apply-insurance", applyInsurance);
 app.use("/api/services/apply-kendra", applyKendra);
-app.use("/api/services/sevaApplication",sevaApplication);
+app.use("/api/services/sevaApplication", sevaApplication);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/admin",dashBoardRoutes);
-app.use("/api/u",profileRoutes);
-app.use("/api/update",employeeImg);
-app.use("/api/attendance",attendanceRoutes);
-app.use("/api/employee",patientRoutes);
+app.use("/api/admin", dashBoardRoutes);
+app.use("/api/u", profileRoutes);
+app.use("/api/update", employeeImg);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/employee", patientRoutes);
 app.use("/api/location", locationRoutes);
-app.use("/api/slide-routes",slideRoutes)
-app.use("/api/testimonials-routes",testimonialsRoutes)
-app.use("/api/service-routes",serviceRoutes)
-app.use("/api/hero-routes",heroroutes)
-app.use("/api/home-routes",homepageRoutes)
+app.use("/api/slide-routes", slideRoutes);
+app.use("/api/testimonials-routes", testimonialsRoutes);
+app.use("/api/service-routes", serviceRoutes);
+app.use("/api/hero-routes", heroroutes);
+app.use("/api/home-routes", homepageRoutes);
 app.use("/api/feedback", feedbackRoutes);
-app.use('/api/jobs', jobRoutes);
+app.use("/api/jobs", jobRoutes);
+// employee
+app.use("/api/employeeData",employeeServiceHome);
 // manageusersData
-
-app.use("/api/manageusersData",manageusersData);
-
-
+app.use("/api/manageusersData", manageusersData);
 // wallet
 app.use("/api/wallet", wallet);
-
-// employeeData
-// app.use("/api/employeeData",employeeData);
-
-// sevaApplication
-
-
-
 // insuranceData
 app.use("/api/insuranceData", insuranceData);
 // ambulanceData
@@ -151,29 +159,26 @@ app.use("/api/ambulanceData", ambulanceData);
 // JansawvimanData
 app.use("/api/JansawvimanData", JansawvimanData);
 // JanarogycardData
-app.use('/api/Janarogycard',Janarogycard);
+app.use("/api/Janarogycard", Janarogycard);
 //Janarogykendra
-app.use('/api/kendra-content',janarogyaFirst);
-app.use('/api/kendra-content',janarogyaSecond);
-//about
-
-
-
+app.use("/api/kendra-content", janarogyaFirst);
+app.use("/api/kendra-content", janarogyaSecond);
 //contact
-app.use("/api/contact-content",contactSettingRoutes)
+app.use("/api/contact-content", contactSettingRoutes);
 //about
-app.use('/api/about', aboutRoute);
-
-app.use('/api/aboutHome', aboutHome);
-app.use('/api/aboutWelcome', aboutWelcome);
-app.use('/api/aboutFeature', aboutFeature);
-
-
-// services 
-app.use("/api/service-card",serviceCardRoutes)
-app.use("/api/service-Features",serviceFeatures)
+app.use("/api/about", aboutRoute);
+app.use("/api/aboutHome", aboutHome);
+app.use("/api/aboutWelcome", aboutWelcome);
+app.use("/api/aboutFeature", aboutFeature);
+// services
+app.use("/api/service-card", serviceCardRoutes);
+app.use("/api/service-Features", serviceFeatures);
 app.use("/api/services", serviceHomepageRoutes);
 app.use("/api/ekyc",ekycRoutes)
+
+
+
+
 // Models
 const User = require("./model/user");
 const SECRET = process.env.SECRET_KEY;
@@ -190,8 +195,8 @@ io.use(async (socket, next) => {
 
     if (!user) return next(new Error("Authentication error: User not found"));
 
-    socket.userId = user._id;       // socket me attach kar diya
-    socket.userRole = user.role;    // optional, role bhi attach kar sakte ho
+    socket.userId = user._id; // socket me attach kar diya
+    socket.userRole = user.role; // optional, role bhi attach kar sakte ho
     next();
   } catch (err) {
     console.error("Socket auth error:", err.message);
@@ -217,7 +222,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", async () => {
     console.log("❌ Client disconnected:", socket.id);
-    const user = await User.findOne({_id: socket.userId });
+    const user = await User.findOne({ _id: socket.userId });
     if (user) {
       user.isOnline = false;
       user.lastSeen = new Date();
@@ -227,8 +232,5 @@ io.on("connection", (socket) => {
     }
   });
 });
-
-
-
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));

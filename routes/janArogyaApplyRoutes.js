@@ -10,14 +10,21 @@ const {
   employeeupdateJanArogyaStatus,
   verifyPayment,
   checkJanarogyaApply,
-  getApprovedApplications,adminOfflineApply
+  getApprovedApplications,
+  adminOfflineApply
 } = require("../controllers/janArogyaApplyController");
 
 const { auth, authorizeRole } = require("../middlewares/auth");
+
+// const multer = require("multer");
+// const upload = multer({ storage: multer.memoryStorage() });
+router.post("/verify-payment",auth, authorizeRole("EMPLOYEE", "USER"), verifyPayment);
+
 const multer = require("multer");
 
 const upload = multer({ storage: multer.memoryStorage() });
 router.post("/verify-payment", auth, authorizeRole("EMPLOYEE","USER"),  verifyPayment);
+
 // USER applies for themselves
 router.post(
   "/apply",
