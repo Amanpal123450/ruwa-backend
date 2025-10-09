@@ -73,6 +73,7 @@ const buildApplication = async (req, res) => {
       currentOccupation,
       currentEmployer,
       designation,
+      
       previousWorkExperience: previousWorkExperience
         ? JSON.parse(previousWorkExperience)
         : [],
