@@ -86,7 +86,7 @@ const janArogyaApplySchema = new mongoose.Schema({
     screenshotUrl: { type: String },
     paid: { type: Boolean, default: false },
   },
-
+  EKYC:{type:Boolean,default:false},
   // Status for admin
   status: {
     type: String,
