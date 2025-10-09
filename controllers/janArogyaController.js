@@ -7,13 +7,18 @@ const { sendEmail } = require("../utils/sendEmail");
 const QRCode = require("qrcode");
 const buildApplication = async (req, res) => {
   try {
-    const { name, aadhar, mobile, state, district, DOB, gender, email,applicationId,submissionDate } =
+    const { name, aadhar, mobile, state, district, DOB, gender, email, applicationId, submissionDate } =
       req.body;
-    const { income_certificate, caste_certificate, ration_id, profilePicUser } =
-      req.files || {}
+    const { income_certificate, caste_certificate, ration_id, profilePicUser } = req.files || {};
 
     const existing = await JanArogyaApplication.findOne({ aadhar });
     if (existing) return res.status(400).json({ message: "Already applied." });
+
+    // Generate unique RUWA card number
+    let lastApplication = await JanArogyaApplication.findOne({}, {}, { sort: { createdAt: -1 } });
+    let lastNumber = lastApplication?.cardNumber?.slice(4) || "123412341234"; // get last 8 digits
+    let newNumber = (parseInt(lastNumber) + 1).toString().padStart(12, "0"); // increment and pad
+    const card_no = `RUWA${newNumber}`;
 
     const app = new JanArogyaApplication({
       name,
@@ -24,52 +29,33 @@ const buildApplication = async (req, res) => {
       DOB,
       gender,
       email,
-      reciept:{
-        applicationId:applicationId,
-        submissionDate:submissionDate,
+      card_no, // <-- add generated card number here
+      reciept: {
+        applicationId,
+        submissionDate,
       },
       appliedBy: req.user.id,
     });
 
+    // Upload files if they exist
     if (income_certificate) {
-      const image = await uploadToCloudinary(
-        income_certificate,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+      const image = await uploadToCloudinary(income_certificate, process.env.FOLDER_NAME, 1000, 1000);
       app.income_certificate = image.secure_url;
     }
-
     if (profilePicUser) {
-      const image = await uploadToCloudinary(
-        profilePicUser,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+      const image = await uploadToCloudinary(profilePicUser, process.env.FOLDER_NAME, 1000, 1000);
       app.profilePicUser = image.secure_url;
     }
-
     if (caste_certificate) {
-      const image = await uploadToCloudinary(
-        caste_certificate,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+      const image = await uploadToCloudinary(caste_certificate, process.env.FOLDER_NAME, 1000, 1000);
       app.caste_certificate = image.secure_url;
     }
     if (ration_id) {
-      const image = await uploadToCloudinary(
-        ration_id,
-        process.env.FOLDER_NAME,
-        1000,
-        1000
-      );
+      const image = await uploadToCloudinary(ration_id, process.env.FOLDER_NAME, 1000, 1000);
       app.ration_id = image.secure_url;
     }
 
+    // Generate QR code
     const qrData = {
       id: app._id,
       name: app.name,
@@ -79,12 +65,11 @@ const buildApplication = async (req, res) => {
       state: app.state,
       district: app.district,
       aadhar: app.aadhar,
+      cardNumber: app.cardNumber
     };
-
     const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData));
-    if (qrCodeUrl) {
-      app.Qr = qrCodeUrl;
-    }
+    if (qrCodeUrl) app.Qr = qrCodeUrl;
+
     await app.save();
     res.status(201).json({ message: "Application submitted", app });
   } catch (err) {
@@ -92,6 +77,7 @@ const buildApplication = async (req, res) => {
     res.status(500).json({ message: "Error applying", error: err.message });
   }
 };
+
 
 // USER applies for self
 exports.userApplyJanarogya = (req, res) => buildApplication(req, res);

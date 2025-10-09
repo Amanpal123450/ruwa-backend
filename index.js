@@ -101,24 +101,24 @@ const insuranceData = require("./routes/insurancData");
 const janarogyaFirst = require("./routes/kendraFirstPage");
 const janarogyaSecond = require("./routes/kendraSecondPage");
 const sevaApplication = require("./routes/sevaRoutes");
-// const employeeData=require("./routes/EmpData")
+// const employeeData=require("./routes/Emp_Service_static/EmpServiceHome")
 
 const wallet = require("./routes/walletRoutes");
-const manageusersData = require("./routes/manage-usersData");
-const jobRoutes = require("./routes/jobRoutes");
+// const manageusersData = require("./routes/manage-usersData");
+// const jobRoutes = require("./routes/jobRoutes");
 const employeeServiceHome = require("./routes/Emp_Service_static/EmpServiceHome");
 
-const wallet=require("./routes/walletRoutes")
+// const wallet=require("./routes/walletRoutes")
 const manageusersData=require("./routes/manage-usersData")
 const jobRoutes=require("./routes/jobRoutes")
-const ekycRoutes=require("./routes/E-KYCRoutes")
+// const ekycRoutes=require("./routes/E-KYCRoutes")
 
 
 
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
 app.use("/api/app-dashboard/", AppDashboardRoutes);
-app.use("/api/services/e-kyc",ekycRoutes)
+// app.use("/api/services/e-kyc",ekycRoutes)
 app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/services/janarogya", janArogyaRoutes);

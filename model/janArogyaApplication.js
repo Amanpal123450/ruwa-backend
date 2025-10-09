@@ -7,6 +7,11 @@ const janArogyaSchema = new mongoose.Schema({
   DOB:{type:Date},
   gender:{type:String},
   Qr:{type:String},
+  card_no: {
+  type: String,
+  unique: true,
+  required: true,
+},
   email: { type: String, required: true },
   state: { type: String, required: true },
   district: { type: String, required: true },

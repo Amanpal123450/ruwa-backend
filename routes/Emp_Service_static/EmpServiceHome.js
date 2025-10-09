@@ -1,8 +1,8 @@
 // routes/employeeDashboardRoute.js
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-router.get("/employee/-data", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const pageContent = {
       greetingBadge: "Employee Portal 👋",
@@ -60,14 +60,14 @@ router.get("/employee/-data", async (req, res) => {
     },
   ];
 
-    res.status(200).json({
-      success: true,
-      data: { pageContent, services },
-    });
+   res.status(200).json({
+  success: true,
+  data: { pageContent, services: employeeServices },
+});
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 
-export default router;
+module.exports = router;
