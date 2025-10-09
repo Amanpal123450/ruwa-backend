@@ -15,10 +15,15 @@ const {
 } = require("../controllers/janArogyaApplyController");
 
 const { auth, authorizeRole } = require("../middlewares/auth");
+
 // const multer = require("multer");
 // const upload = multer({ storage: multer.memoryStorage() });
 router.post("/verify-payment",auth, authorizeRole("EMPLOYEE", "USER"), verifyPayment);
 
+const multer = require("multer");
+
+const upload = multer({ storage: multer.memoryStorage() });
+router.post("/verify-payment", auth, authorizeRole("EMPLOYEE","USER"),  verifyPayment);
 
 // USER applies for themselves
 router.post(
@@ -54,6 +59,6 @@ router.get("/admin/aprooved", auth, authorizeRole("ADMIN"), getApprovedApplicati
 
 // ADMIN: Update status
 router.put("/admin/status/:id", auth, authorizeRole("ADMIN"), updateJanArogyaStatus);
-router.put("/withdrawn", auth, authorizeRole("EMPLOYEE"), employeeupdateJanArogyaStatus)
+router.put("/withdrawn", auth, authorizeRole("EMPLOYEE"), employeeupdateJanArogyaStatus);
 
 module.exports = router;
