@@ -365,15 +365,15 @@ exports.checkApplicationById = async (req, res) => {
     }
 
     // Validate E-KYC eligibility
-    const eligibilityCheck = await exports.validateEKYCEligibility(applicationId, req.user._id);
+    // const eligibilityCheck = await exports.validateEKYCEligibility(applicationId, req.user._id);
     
-    if (!eligibilityCheck.eligible) {
-      return res.status(400).json({
-        success: false,
-        message: eligibilityCheck.message,
-        application: application
-      });
-    }
+    // if (!eligibilityCheck.eligible) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: eligibilityCheck.message,
+    //     application: application
+    //   });
+    // }
 
     // Return application data
     res.status(200).json({
