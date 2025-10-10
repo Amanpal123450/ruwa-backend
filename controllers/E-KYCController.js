@@ -1,4 +1,5 @@
 const EKYC = require('../model/E-KYC');
+const janArogyaApply = require('../model/janArogyaApply');
 const { uploadToCloudinary } = require('../utils/imageUploader');
 
 /**
@@ -19,6 +20,7 @@ exports.submitEKYC = async (req, res) => {
         message: 'Application ID is required'
       });
     }
+ 
 
     // Check if E-KYC already exists for this application
     const existingEKYC = await EKYC.findOne({ applicationId });
@@ -38,7 +40,7 @@ exports.submitEKYC = async (req, res) => {
       });
     }
 
-    // Prepare data object
+   
     const ekycData = {
       applicationId,
       // Section 1: Personal Information
@@ -191,6 +193,18 @@ exports.submitEKYC = async (req, res) => {
     // Create E-KYC record
     const ekyc = new EKYC(ekycData);
     await ekyc.save();
+     const application = await janArogyaApply.findOneAndUpdate(
+  { applicationId }, // filter
+  { $set: { EKYC: true } }, // update EKYC to true
+  { new: true } // return the updated document
+);
+
+if (!application) {
+  return res.status(400).json({
+    success: false,
+    message: 'No Application With This Aadhar'
+  });
+}
 
     res.status(201).json({
       success: true,
