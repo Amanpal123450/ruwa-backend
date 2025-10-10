@@ -54,7 +54,7 @@ router.get(
 
 // ✅ Get single E-KYC record by ID
 router.get(
-  "/admin/:id",
+  "/admin/:applicationId",
   auth,
   authorizeRole("ADMIN"),
   ekycCtrl.getEKYCByApplicationId

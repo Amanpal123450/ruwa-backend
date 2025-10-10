@@ -335,3 +335,205 @@ exports.verifyPayment = async (req, res) => {
       .json({ message: "Error verifying payment", error: err.message });
   }
 };
+// Add this to your janArogyaApply controller file
+
+/**
+ * Check if application exists and return application data
+ * Route: GET /api/services/apply-kendra/check-application/:applicationId
+ */
+exports.checkApplicationById = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    
+    if (!applicationId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Application ID is required'
+      });
+    }
+
+    // Find application by applicationId
+    const application = await janArogyaApply.findOne({ 
+      applicationId: applicationId 
+    }).select('-payment.screenshotUrl -idProof -qualificationCertificate -financialStatement');
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found with this ID'
+      });
+    }
+
+    // Validate E-KYC eligibility
+    const eligibilityCheck = await exports.validateEKYCEligibility(applicationId, req.user._id);
+    
+    if (!eligibilityCheck.eligible) {
+      return res.status(400).json({
+        success: false,
+        message: eligibilityCheck.message,
+        application: application
+      });
+    }
+
+    // Return application data
+    res.status(200).json({
+      success: true,
+      message: 'Application found and eligible for E-KYC',
+      application: application
+    });
+
+  } catch (error) {
+    console.error('Check Application Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to check application',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Helper function to validate if user can proceed with E-KYC
+ */
+exports.validateEKYCEligibility = async (applicationId, userId) => {
+  try {
+    const application = await janArogyaApply.findOne({ 
+      applicationId: applicationId 
+    });
+
+    if (!application) {
+      return {
+        eligible: false,
+        message: 'Application not found'
+      };
+    }
+
+    // Check if application belongs to the user (optional security check)
+    if (userId && application.appliedBy && application.appliedBy.toString() !== userId.toString()) {
+      return {
+        eligible: false,
+        message: 'This application does not belong to you'
+      };
+    }
+
+    // Check if application is approved
+    if (application.status !== 'APPROVED') {
+      return {
+        eligible: false,
+        message: `Application status is ${application.status}. Only APPROVED applications can proceed with E-KYC.`,
+        currentStatus: application.status
+      };
+    }
+
+    // Check if E-KYC already completed
+    if (application.EKYC === true) {
+      return {
+        eligible: false,
+        message: 'E-KYC already completed for this application'
+      };
+    }
+
+    // Check if payment is done
+    if (!application.payment || !application.payment.verified) {
+      return {
+        eligible: false,
+        message: 'Payment verification pending. Please complete payment verification first.'
+      };
+    }
+
+    // All checks passed
+    return {
+      eligible: true,
+      message: 'Application is eligible for E-KYC',
+      application: application
+    };
+
+  } catch (error) {
+    console.error('E-KYC Eligibility Validation Error:', error);
+    return {
+      eligible: false,
+      message: 'Error validating E-KYC eligibility',
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Get E-KYC status for an application
+ * Route: GET /api/services/apply-kendra/ekyc-status/:applicationId
+ */
+exports.getEKYCStatus = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    
+    const application = await janArogyaApply.findOne({ 
+      applicationId: applicationId 
+    }).select('applicationId status EKYC payment.verified');
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        applicationId: application.applicationId,
+        status: application.status,
+        ekycCompleted: application.EKYC || false,
+        paymentVerified: application.payment?.verified || false
+      }
+    });
+
+  } catch (error) {
+    console.error('Get E-KYC Status Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get E-KYC status',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Update E-KYC status after completion
+ * Route: PATCH /api/services/apply-kendra/update-ekyc/:applicationId
+ * This should be called after E-KYC form submission
+ */
+exports.updateEKYCStatus = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    
+    const application = await janArogyaApply.findOneAndUpdate(
+      { applicationId: applicationId },
+      { 
+        EKYC: true,
+        ekycCompletedAt: new Date()
+      },
+      { new: true }
+    ).select('applicationId status EKYC ekycCompletedAt');
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'E-KYC status updated successfully',
+      application: application
+    });
+
+  } catch (error) {
+    console.error('Update E-KYC Status Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update E-KYC status',
+      error: error.message
+    });
+  }
+};

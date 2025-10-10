@@ -93,6 +93,12 @@ const janArogyaApplySchema = new mongoose.Schema({
     enum: ["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"],
     default: "PENDING",
   },
+  
+  
+remarks:{type:String},
+  ekycStatus:{ type: String,
+    enum: ["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"],
+    default: "PENDING",},
      applicationId:{type:String,required:true},
       enrollmentNo:{type:String,required:true},
       submissionDate:{type:String,required:true},

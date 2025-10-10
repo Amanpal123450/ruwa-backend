@@ -27,6 +27,7 @@ exports.submitEKYC = async (req, res) => {
     if (existingEKYC) {
       return res.status(400).json({
         success: false,
+        
         message: 'E-KYC form already submitted for this application'
       });
     }
@@ -327,8 +328,8 @@ exports.getAllEKYCForms = async (req, res) => {
 exports.updateEKYCStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, remarks } = req.body;
-    const validStatuses = ['pending', 'submitted', 'verified', 'rejected'];
+    const { ekycStatus, remarks } = req.body;
+    const validStatuses = ['Pending', 'Submitted', 'Aprooved', 'Rejected'];
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
@@ -337,7 +338,7 @@ exports.updateEKYCStatus = async (req, res) => {
       });
     }
 
-    const ekyc = await EKYC.findById(id);
+    const ekyc = await janArogyaApply.findById(id);
     if (!ekyc) {
       return res.status(404).json({
         success: false,
@@ -345,12 +346,9 @@ exports.updateEKYCStatus = async (req, res) => {
       });
     }
 
-    ekyc.status = status;
+    ekyc.ekycStatus = status;
     ekyc.remarks = remarks;
-    if (status === 'verified') {
-      ekyc.verifiedAt = new Date();
-      ekyc.verifiedBy = req.user._id;
-    }
+    
 
     await ekyc.save();
     res.status(200).json({

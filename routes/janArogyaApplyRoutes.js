@@ -11,7 +11,11 @@ const {
   verifyPayment,
   checkJanarogyaApply,
   getApprovedApplications,
-  adminOfflineApply
+  adminOfflineApply,
+  checkApplicationById, 
+  getEKYCStatus, 
+  updateEKYCStatus,
+  validateEKYCEligibility 
 } = require("../controllers/janArogyaApplyController");
 
 const { auth, authorizeRole } = require("../middlewares/auth");
@@ -60,5 +64,11 @@ router.get("/admin/aprooved", auth, authorizeRole("ADMIN"), getApprovedApplicati
 // ADMIN: Update status
 router.put("/admin/status/:id", auth, authorizeRole("ADMIN"), updateJanArogyaStatus);
 router.put("/withdrawn", auth, authorizeRole("EMPLOYEE"), employeeupdateJanArogyaStatus);
+router.get('/check-application/:applicationId', auth,authorizeRole("USER"), checkApplicationById);
 
+// Get E-KYC status
+router.get('/ekyc-status/:applicationId', auth,authorizeRole("USER"), getEKYCStatus);
+
+// Update E-KYC status (called after E-KYC submission)
+router.patch('/update-ekyc/:applicationId', auth,authorizeRole("USER"), updateEKYCStatus);
 module.exports = router;
