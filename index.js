@@ -116,6 +116,7 @@ const employeeServiceHome = require("./routes/Emp_Service_static/EmpServiceHome"
 // const wallet=require("./routes/walletRoutes")
 const manageusersData=require("./routes/manage-usersData")
 const jobRoutes=require("./routes/jobRoutes")
+const otpRoutes = require("./routes/otpRoutes");
 // const ekycRoutes=require("./routes/E-KYCRoutes")
 
 
@@ -146,6 +147,7 @@ app.use("/api/hero-routes", heroroutes);
 app.use("/api/home-routes", homepageRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/otp", otpRoutes);
 // employee
 app.use("/api/employeeData",employeeServiceHome);
 // manageusersData
