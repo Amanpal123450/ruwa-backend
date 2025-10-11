@@ -64,7 +64,7 @@ router.get("/admin/aprooved", auth, authorizeRole("ADMIN"), getApprovedApplicati
 // ADMIN: Update status
 router.put("/admin/status/:id", auth, authorizeRole("ADMIN"), updateJanArogyaStatus);
 router.put("/withdrawn", auth, authorizeRole("EMPLOYEE"), employeeupdateJanArogyaStatus);
-router.get('/check-application/:applicationId', auth,authorizeRole("USER"), checkApplicationById);
+router.get('/check-application/:applicationId', auth,authorizeRole("USER","EMPLOYEE"), checkApplicationById);
 
 // Get E-KYC status
 router.get('/ekyc-status/:applicationId', auth,authorizeRole("USER"), getEKYCStatus);

@@ -17,7 +17,7 @@ const { auth, authorizeRole } = require("../middlewares/auth");
 router.post(
   "/user/submit",
   auth,
-  authorizeRole("USER"),
+  authorizeRole("USER","EMPLOYEE"),
 
   ekycCtrl.submitEKYC
 );
@@ -26,7 +26,7 @@ router.post(
 router.get(
   "/user/:applicationId",
   auth,
-  authorizeRole("USER"),
+  authorizeRole("USER","EMPLOYEE"),
   ekycCtrl.getEKYCByApplicationId
 );
 
@@ -62,7 +62,7 @@ router.get(
 
 // ✅ Update verification/rejection status
 router.put(
-  "/admin/status/:id",
+  "/admin/status/:applicationId",
   auth,
   authorizeRole("ADMIN"),
   ekycCtrl.updateEKYCStatus
