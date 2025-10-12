@@ -327,43 +327,45 @@ exports.getAllEKYCForms = async (req, res) => {
 // ADMIN: Update E-KYC Status
 exports.updateEKYCStatus = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { ekycStatus, remarks } = req.body;
-    const validStatuses = ['Pending', 'Submitted', 'Aprooved', 'Rejected'];
+    const { applicationId } = req.params;
+    const { ekycStatus, remarks } = req.body; // ✅ use ekycStatus, not status
 
-    if (!validStatuses.includes(status)) {
+    const validStatuses = ["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"];
+
+    if (!validStatuses.includes(ekycStatus)) {
       return res.status(400).json({
         success: false,
-        message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`
       });
     }
 
-    const ekyc = await janArogyaApply.findById(id);
+    const ekyc = await janArogyaApply.findOne({applicationId});
     if (!ekyc) {
       return res.status(404).json({
         success: false,
-        message: 'E-KYC record not found'
+        message: "E-KYC record not found"
       });
     }
 
-    ekyc.ekycStatus = status;
+    ekyc.ekycStatus = ekycStatus;
     ekyc.remarks = remarks;
-    
 
     await ekyc.save();
+
     res.status(200).json({
       success: true,
-      message: `E-KYC ${status} successfully`,
+      message: `E-KYC ${ekycStatus} successfully`,
       data: ekyc
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to update E-KYC status',
+      message: "Failed to update E-KYC status",
       error: error.message
     });
   }
 };
+
 
 // ADMIN: Delete E-KYC
 exports.deleteEKYC = async (req, res) => {

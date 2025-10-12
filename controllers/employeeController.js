@@ -178,12 +178,12 @@ exports.getEmployeeServiceUsers = async (req, res) => {
     switch (service) {
       case "ambulance":
         applications = await AmbulanceBooking.find({ appliedBy: employeeId })
-          .populate( "fullName phone email _id");
+          
         break;
 
       case "insurance":
         applications = await ApplyInsuranceApplication.find({ appliedBy: employeeId })
-          .populate( "fullName phone email _id");
+          
         break;
 
       case "janArogyaApplication":
@@ -192,8 +192,9 @@ exports.getEmployeeServiceUsers = async (req, res) => {
         break;
 
       case "janArogyaApply":
+        console.log("git itttt")
         applications = await JanArogyaApply.find({ appliedBy: employeeId })
-          .populate( "name phone _id");
+          
         break;
      case "sevaApplication":
         applications = await sevaApplication.find({ appliedBy: employeeId })
@@ -211,7 +212,8 @@ exports.getEmployeeServiceUsers = async (req, res) => {
       status: app.status,
       service,
       createdAt: app.createdAt,
-      id:  app._id
+      id:  app._id,
+      applicationId:app.applicationId
     }));
 
     res.json({ success: true, service, appliedUsers });
