@@ -160,7 +160,7 @@ exports.verifyOtp = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to verify OTP. Please try again",
-    });
+    })
   }
 };
 
