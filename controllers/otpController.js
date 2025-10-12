@@ -112,7 +112,7 @@ exports.verifyOtp = async (req, res) => {
       "reciept.applicationId": applicationNumber,
       mobile: mobileNumber,
       status: "APPROVED",
-    }).populate("appliedBy", "name email");
+    })
 
     if (!application) {
       return res.status(404).json({
@@ -123,37 +123,37 @@ exports.verifyOtp = async (req, res) => {
 
     delete global.otpStore[mobileNumber];
 
-    const userData = {
-      name: application.name,
-      dob: application.DOB
-        ? new Date(application.DOB).toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })
-        : "N/A",
-      gender: application.gender || "N/A",
-      address: `${application.district}, ${application.state}`,
-      applicationNo: application.reciept.applicationId,
-      cardNumber: application.card_no,
-      validUpto: "31-Dec-2028",
-      services: "Healthcare, Ambulance, Insurance",
-      profilePicUrl:
-        application.profilePicUser ||
-        `https://placehold.co/100x100/E2E8F0/475569?text=${application.name.charAt(
-          0
-        )}`,
-      mobile: application.mobile,
-      email: application.email,
-      aadhar: application.aadhar.replace(/\d(?=\d{4})/g, "X"),
-      qrCode: application.Qr,
-      submissionDate: application.reciept.submissionDate,
-    };
+    // const userData = {
+    //   name: application.name,
+    //   dob: application.DOB
+    //     ? new Date(application.DOB).toLocaleDateString("en-IN", {
+    //         day: "2-digit",
+    //         month: "short",
+    //         year: "numeric",
+    //       })
+    //     : "N/A",
+    //   gender: application.gender || "N/A",
+    //   address: `${application.district}, ${application.state}`,
+    //   applicationNo: application.reciept.applicationId,
+    //   cardNumber: application.card_no,
+    //   validUpto: "31-Dec-2028",
+    //   services: "Healthcare, Ambulance, Insurance",
+    //   profilePicUrl:
+    //     application.profilePicUser ||
+    //     `https://placehold.co/100x100/E2E8F0/475569?text=${application.name.charAt(
+    //       0
+    //     )}`,
+    //   mobile: application.mobile,
+    //   email: application.email,
+    //   aadhar: application.aadhar.replace(/\d(?=\d{4})/g, "X"),
+    //   qrCode: application.Qr,
+    //   submissionDate: application.reciept.submissionDate,
+    // };
 
     res.status(200).json({
       success: true,
       message: "OTP verified successfully",
-      data: userData,
+      data: application,
     });
   } catch (error) {
     console.error("Verify OTP Error:", error);

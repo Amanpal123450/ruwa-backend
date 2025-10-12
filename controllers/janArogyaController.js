@@ -137,6 +137,30 @@ exports.checkJanarogya = async (req, res) => {
   }
 };
 
+exports.deleteApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const app = await JanArogyaApplication.findByIdAndDelete(id);
+
+    if (!app) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    res.json({
+      message: "Application deleted successfully",
+      deletedApplication: app,
+    });
+  } catch (err) {
+    console.error("Error deleting application:", err);
+    res.status(500).json({
+      message: "Error deleting application",
+      error: err.message,
+    });
+  }
+};
+
+
 
 
 // USER: Get own applications

@@ -72,4 +72,12 @@ router.put(
   janCtrl.updateApplicationStatus
 );
 
+router.delete(
+  "/admin/delete/:id",
+  auth,
+  authorizeRole("ADMIN"),
+  janCtrl.deleteApplication
+);
+
+
 module.exports = router;
