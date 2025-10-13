@@ -599,3 +599,80 @@ exports.getAdminUserServices = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+exports.createVendor = async (req, res) => {
+  try {
+    const { name, phone, password, aadhar, email, address,areaName, gstNumber,vendorId } = req.body;
+
+    if (!name || !phone || !password || !aadhar || !address || !areaName|| !vendorId || !email) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check for duplicates
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) return res.status(400).json({ message: "Phone already exists" });
+
+    const existingAadhar = await User.findOne({ aadhar });
+    if (existingAadhar) return res.status(400).json({ message: "Aadhar already exists" });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Generate unique vendorId (like EMP123@ or VEND123@)
+    // let vendorId;
+    // let isUnique = false;
+    // while (!isUnique) {
+    //   vendorId = `VEND@${Math.floor(1000 + Math.random() * 9000)}`;
+    //   const existing = await User.findOne({ vendorId });
+    //   if (!existing) isUnique = true;
+    // }
+
+    // Generate numeric userId
+    const lastVendor = await User.findOne({ role: "VENDOR" }).sort({ userId: -1 });
+    const newUserId = lastVendor ? lastVendor.userId + 1 : 2001;
+
+    // Create vendor
+    const newVendor = new User({
+      name,
+      phone,
+      password: hashedPassword,
+      aadhar,
+      email,
+      address,
+      areaName,
+      gstNumber,
+      role: "VENDOR",
+      vendorId,
+      userId: newUserId,
+      verified: true,
+      joinDate: new Date().toISOString(),
+    });
+
+    await newVendor.save();
+
+    // ✅ Optional: send login details to vendor
+    // const subject = "Your Vendor Account Created";
+    // const message = `
+    // Hello ${name},
+
+    // Your vendor account has been successfully created!
+    // Vendor ID: ${vendorId}
+    // Phone: ${phone}
+    // Password: ${password}
+    // Shop Name: ${shopName}
+
+    // Regards,
+    // RUWA Team
+    // `;
+    // await sendEmail(email, subject, message);
+
+    res.status(201).json({
+      success: true,
+      message: "Vendor created successfully",
+      vendor: newVendor,
+    });
+  } catch (error) {
+    console.error("Error creating vendor:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
