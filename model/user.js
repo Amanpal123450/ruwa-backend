@@ -9,11 +9,14 @@ const userSchema = new mongoose.Schema({
   userId:{type:Number,unique:true},
   email: { type: String, sparse: true }, // for admins/employees
   employeeId: { type: String, unique: true, sparse: true }, // for employees
+    vendorId: { type: String, unique: true, sparse: true },
   role: {
     type: String,
-    enum: ["USER", "ADMIN", "EMPLOYEE"],
+    enum: ["USER", "ADMIN", "EMPLOYEE","VENDOR"],
     default: "USER"
   },
+    areaName: { type: String },
+  gstNumber: { type: String },
   DOB:{type:Date},
   status:{type:String},
   purpose:{type:String},
