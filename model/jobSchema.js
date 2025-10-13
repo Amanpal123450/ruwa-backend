@@ -2,23 +2,23 @@ const mongoose = require('mongoose');
 
 const jobApplicationSchema = new mongoose.Schema({
   // Job Reference
-  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
+  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job' },
   
   // Personal Information
-  fullName: { type: String, required: true },
-  email: { type: String, required: true },
-  phoneNumber: { type: String, required: true },
-  dateOfBirth: { type: Date, required: true },
-  gender: { type: String, required: true, enum: ['Male', 'Female', 'Other'] },
+  fullName: { type: String },
+  email: { type: String },
+  phoneNumber: { type: String },
+  dateOfBirth: { type: Date },
+  gender: { type: String, enum: ['Male', 'Female', 'Other'] },
   
   // Address Details
-  address: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
-  pincode: { type: String, required: true },
+  address: { type: String },
+  city: { type: String },
+  state: { type: String },
+  pincode: { type: String },
   
   // Educational Information
-  educationalQualification: { type: String, required: true },
+  educationalQualification: { type: String },
   institution: String,
   yearOfPassing: String,
   
@@ -40,9 +40,9 @@ const jobApplicationSchema = new mongoose.Schema({
   
   // File Paths (stored after upload)
   documents: {
-    resume: { type: String, required: true },
-    photo: { type: String, required: true },
-    idProof: { type: String, required: true },
+    resume: { type: String },
+    photo: { type: String },
+    idProof: { type: String },
     educationalCertificate: String,
     experienceCertificate: String,
     drivingLicense: String,
