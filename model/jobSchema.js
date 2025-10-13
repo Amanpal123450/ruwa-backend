@@ -1,71 +1,53 @@
 const mongoose = require('mongoose');
 
-const jobApplicationSchema = new mongoose.Schema({
-  // Job Reference
-  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job' },
-  
-  // Personal Information
-  fullName: { type: String },
-  email: { type: String },
-  phoneNumber: { type: String },
-  dateOfBirth: { type: Date },
-  gender: { type: String, enum: ['Male', 'Female', 'Other'] },
-  
-  // Address Details
-  address: { type: String },
-  city: { type: String },
-  state: { type: String },
-  pincode: { type: String },
-  
-  // Educational Information
-  educationalQualification: { type: String },
-  institution: String,
-  yearOfPassing: String,
-  
-  // Professional Information
-  experienceYears: Number,
-  previousEmployer: String,
-  currentSalary: String,
-  expectedSalary: String,
-  
-  // Job Specific
-  specialization: String,
-  licenseNumber: String,
-  registrationNumber: String,
-  
-  // Additional
-  coverLetter: String,
-  linkedinProfile: String,
-  portfolio: String,
-  
-  // File Paths (stored after upload)
-  documents: {
-    resume: { type: String },
-    photo: { type: String },
-    idProof: { type: String },
-    educationalCertificate: String,
-    experienceCertificate: String,
-    drivingLicense: String,
-    medicalRegistration: String,
-  },
-  
-  // Application Status
-  status: { 
+const jobSchema = new mongoose.Schema({
+  // Basic Details
+  jobTitle: { type: String, required: true },
+  advertisementNumber: { type: String },
+  postingDate: { type: Date, default: Date.now },
+
+  // Vacancy Details
+  totalVacancies: { type: Number },
+  jobCategory: { type: String },
+  postName: { type: String },
+  payScale: { type: String },
+  numberOfPosts: { type: Number },
+
+  // Age Criteria
+  minAge: { type: Number },
+  maxAge: { type: Number },
+  ageRelaxation: { type: String },
+
+  // Qualification & Experience
+  educationalQualifications: { type: String },
+  experienceRequired: { type: String },
+
+  // Application Details
+  applicationStartDate: { type: Date },
+  applicationEndDate: { type: Date },
+  applicationFee: { type: String },
+  applicationMode: { type: String, enum: ['online', 'offline'], default: 'online' },
+  applicationLink: { type: String },
+
+  // Contact Information
+  contactEmail: { type: String },
+  contactDepartment: { type: String },
+  officialWebsite: { type: String },
+
+  // Job Description
+  jobResponsibilities: { type: String },
+  importantNotes: { type: String },
+
+  // Status and Flags
+  jobStatus: { 
     type: String, 
-    default: 'pending',
-    enum: ['pending', 'under_review', 'shortlisted', 'rejected', 'selected']
+    enum: ['draft', 'active', 'closed'], 
+    default: 'draft' 
   },
-  
-  // Admin Notes
-  adminNotes: String,
-  reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  reviewedAt: Date,
-  
+  featured: { type: Boolean, default: false },
+
+  // Location
+  jobLocation: { type: String },
 }, { timestamps: true });
 
-// Index for faster queries
-jobApplicationSchema.index({ jobId: 1, status: 1 });
-jobApplicationSchema.index({ email: 1 });
-jobApplicationSchema.index({ createdAt: -1 });
-
-module.exports = mongoose.model('JobApplication', jobApplicationSchema);
+module.exports = mongoose.model('Job', jobSchema);
