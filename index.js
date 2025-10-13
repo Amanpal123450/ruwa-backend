@@ -54,8 +54,8 @@ app.use(
     abortOnLimit: true,
   })
 );
-app.use(express.json()); // <--- must be here
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(cookieParser());
 
@@ -80,7 +80,7 @@ const employeeImg = require("./routes/employeeProfileImage");
 const patientRoutes = require("./routes/patientRoutes");
 
 const locationRoutes = require("./routes/locationsRoutes");
-
+const jobApplicationRoutes=require("./routes/jobApplicationsRoute")
 const AppDashboardRoutes = require("./routes/AppDashboardRoute");
 
 const slideRoutes = require("./routes/slidesRoutes");
@@ -124,6 +124,7 @@ const otpRoutes = require("./routes/otpRoutes");
 app.use("/api/popup", popupRoutes);
 app.use("/api/states/", statesRouter);
 app.use("/api/app-dashboard/", AppDashboardRoutes);
+app.use("/api/job-application", jobApplicationRoutes);
 
 app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);

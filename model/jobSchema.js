@@ -1,78 +1,71 @@
 const mongoose = require('mongoose');
 
-const jobSchema = new mongoose.Schema({
-  // Basic Information
-  jobTitle: { type: String, required: true },
-  advertisementNumber: { type: String, required: true },
-  postingDate: { type: Date, default: Date.now },
-  totalVacancies: { type: Number, required: true },
-  jobCategory: { type: String, required: true },
-
-  // Position Details
-  postName: { type: String, required: true },
-  payScale: { type: String, required: true },
-  numberOfPosts: { type: Number, required: true },
-
-  // Eligibility
-  minAge: Number,
-  maxAge: Number,
-  ageRelaxation: String,
-  educationalQualifications: String,
-  experienceRequired: String,
-
+const jobApplicationSchema = new mongoose.Schema({
+  // Job Reference
+  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
+  
+  // Personal Information
+  fullName: { type: String, required: true },
+  email: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
+  dateOfBirth: { type: Date, required: true },
+  gender: { type: String, required: true, enum: ['Male', 'Female', 'Other'] },
+  
+  // Address Details
+  address: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  pincode: { type: String, required: true },
+  
+  // Educational Information
+  educationalQualification: { type: String, required: true },
+  institution: String,
+  yearOfPassing: String,
+  
+  // Professional Information
+  experienceYears: Number,
+  previousEmployer: String,
+  currentSalary: String,
+  expectedSalary: String,
+  
   // Job Specific
   specialization: String,
-  medicalRegistration: String,
-  department: String,
-  licenseType: String,
-  dutyHours: String,
-  vehicleType: String,
-  additionalSkills: String,
-
-  // Selection Process
-  selectionStages: {
-    writtenExam: { type: Boolean, default: false },
-    interview: { type: Boolean, default: false },
-    skillTest: { type: Boolean, default: false },
-    drivingTest: { type: Boolean, default: false },
-    documentVerification: { type: Boolean, default: false },
-    medicalTest: { type: Boolean, default: false },
+  licenseNumber: String,
+  registrationNumber: String,
+  
+  // Additional
+  coverLetter: String,
+  linkedinProfile: String,
+  portfolio: String,
+  
+  // File Paths (stored after upload)
+  documents: {
+    resume: { type: String, required: true },
+    photo: { type: String, required: true },
+    idProof: { type: String, required: true },
+    educationalCertificate: String,
+    experienceCertificate: String,
+    drivingLicense: String,
+    medicalRegistration: String,
   },
-  selectionProcess: String,
-
-  // Application Details
-  applicationStartDate: Date,
-  applicationEndDate: Date,
-  applicationFee: String,
-  applicationMode: { type: String, default: 'online' },
-  applicationLink: String,
-  applicationEmail: String,
-
-  // Documents Required
-  requiredDocuments: {
-    educational: { type: Boolean, default: false },
-    experience: { type: Boolean, default: false },
-    drivingLicense: { type: Boolean, default: false },
-    medicalRegistrationDoc: { type: Boolean, default: false },
-    idProof: { type: Boolean, default: false },
-    photo: { type: Boolean, default: false },
-    signature: { type: Boolean, default: false },
+  
+  // Application Status
+  status: { 
+    type: String, 
+    default: 'pending',
+    enum: ['pending', 'under_review', 'shortlisted', 'rejected', 'selected']
   },
-
-  // Job Description
-  jobResponsibilities: String,
-  importantNotes: String,
-
-  // Contact
-  contactEmail: String,
-  contactDepartment: String,
-  officialWebsite: String,
-  jobLocation: String,
-
-  // Status
-  jobStatus: { type: String, default: 'draft' },
-  featured: { type: Boolean, default: false },
-
+  
+  // Admin Notes
+  adminNotes: String,
+  reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  reviewedAt: Date,
+  
 }, { timestamps: true });
 
-module.exports = mongoose.model('Job', jobSchema);
+// Index for faster queries
+jobApplicationSchema.index({ jobId: 1, status: 1 });
+jobApplicationSchema.index({ email: 1 });
+jobApplicationSchema.index({ createdAt: -1 });
+
+module.exports = mongoose.model('JobApplication', jobApplicationSchema);
