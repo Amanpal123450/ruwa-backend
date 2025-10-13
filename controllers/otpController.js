@@ -151,10 +151,11 @@ exports.verifyOtp = async (req, res) => {
     // };
 
     res.status(200).json({
-      success: true,
-      message: "OTP verified successfully",
-      data: application,
+      msg: "OTP verified successfully",
+      application,
+      status:true,
     });
+
   } catch (error) {
     console.error("Verify OTP Error:", error);
     res.status(500).json({
