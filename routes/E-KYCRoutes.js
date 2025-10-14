@@ -16,7 +16,7 @@ const { auth, authorizeRole } = require("../middlewares/auth");
 // ✅ Submit E-KYC Form (with multiple file uploads if needed)
 router.post(
   "/user/submit",
-  auth,
+  
   // authorizeRole("USER","EMPLOYEE"),
 
   ekycCtrl.submitEKYC

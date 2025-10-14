@@ -27,7 +27,6 @@ exports.submitEKYC = async (req, res) => {
     if (existingEKYC) {
       return res.status(400).json({
         success: false,
-        
         message: 'E-KYC form already submitted for this application'
       });
     }
