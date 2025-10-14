@@ -17,7 +17,7 @@ const { auth, authorizeRole } = require("../middlewares/auth");
 router.post(
   "/user/submit",
   auth,
-  authorizeRole("USER","EMPLOYEE"),
+  // authorizeRole("USER","EMPLOYEE"),
 
   ekycCtrl.submitEKYC
 );
