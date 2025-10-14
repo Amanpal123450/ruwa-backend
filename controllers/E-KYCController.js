@@ -6,7 +6,7 @@ const { uploadToCloudinary } = require('../utils/imageUploader');
  * ================================
  * USER CONTROLLERS
  * ================================
- */
+ **/
 
 // USER: Submit E-KYC Form
 exports.submitEKYC = async (req, res) => {
