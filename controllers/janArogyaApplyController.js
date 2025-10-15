@@ -392,7 +392,6 @@ exports.checkApplicationById = async (req, res) => {
   }
 };
 
-
 /**
  * Helper function to validate if user can proceed with E-KYC
  */
