@@ -41,27 +41,33 @@ exports.register = async (req, res) => {
 // LOGIN via password
 exports.login = async (req, res) => {
   try {
-    const { phone, employeeId, password } = req.body;
+    const { phone, employeeId, vendorId, password } = req.body;
 
-    if (!password || (!phone && !employeeId)) {
+    if (!password || (!phone && !employeeId && !vendorId)) {
       return res.status(400).json({ message: "Missing login credentials" });
     }
 
-    // Find user by phone or employeeId
+    // Find user by phone / employeeId / vendorId
     let user;
     if (phone) {
       user = await User.findOne({ phone });
     } else if (employeeId) {
       user = await User.findOne({ employeeId });
+    } else if (vendorId) {
+      user = await User.findOne({ vendorId });
     }
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if employee is approved
+    // Role-specific checks
     if (user.role === "EMPLOYEE" && !user.verified) {
       return res.status(403).json({ message: "Employee not approved yet" });
+    }
+
+    if (user.role === "VENDOR" && !user.verified) {
+      return res.status(403).json({ message: "Vendor not verified yet" });
     }
 
     // Verify password
@@ -70,19 +76,29 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
+    // Generate token with role
     const token = generateToken(user);
 
-    res.json({
-      message: "Logged in successfully",
+    res.status(200).json({
+      success: true,
+      message: `${user.role} logged in successfully`,
       token,
       role: user.role,
-      status:user.status
+      status: user.status,
+      user: {
+        id: user._id,
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+        vendorId: user.vendorId,
+      },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // RESET password (with phone verification logic assumed)
 exports.resetPassword = async (req, res) => {
@@ -109,3 +125,12 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+
+
+
+
+
+
