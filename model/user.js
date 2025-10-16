@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema({
   position:{type:String},
   // 🔹 Admin profile fields
   full_name: { type: String },
-  
+  approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+
   language: { type: String },
   time_zone: { type: String },
   nationality: { type: String },

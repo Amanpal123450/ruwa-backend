@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser, updateEmployee, getEmployeeById, getEmployeeAttendance, getAdminEmployeeAppliedUsers, getAdminUserServices, createVendor } = require("../controllers/adminController");
+const { getProfile, updateProfile,createEmployee,getAllEmployees,deleteEmployee,getAllUser, updateEmployee, getEmployeeById, getEmployeeAttendance, getAdminEmployeeAppliedUsers, getAdminUserServices, createVendor, updateEmployeeStatus, createEmployeeByVendor, getPendingEmployees } = require("../controllers/adminController");
 const { auth, authorizeRole } = require("../middlewares/auth");
 
 
@@ -38,9 +38,16 @@ router.get(
   authorizeRole("ADMIN"),
   getAllUser
 );
-
+router.get(
+  "/get-vendor-employee",
+  auth,
+  authorizeRole("ADMIN"),
+  getPendingEmployees
+);
 
 router.post("/create", auth,authorizeRole("ADMIN"), createEmployee);
+router.post("/vendor-create-employee", auth,authorizeRole("VENDOR"), createEmployeeByVendor);
+router.put("/admin-aproove-employee", auth,authorizeRole("ADMIN"), updateEmployeeStatus);
 router.post("/createVendor", auth, authorizeRole("ADMIN"), createVendor);
 // Multer setup
 const storage = multer.diskStorage({

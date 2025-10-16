@@ -401,6 +401,7 @@ exports.createEmployee = async (req, res) => {
       department,
       address,
       position,
+      status:"APROOVED"
     });
 
    
@@ -438,6 +439,58 @@ exports.createEmployee = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+exports.createEmployeeByVendor = async (req, res) => {
+  try {
+    const { name, phone, password, employeeId, email, department, position, address } = req.body;
+    const vendor = req.user; // vendor is authenticated (via middleware)
+
+    if (!name || !phone || !password || !employeeId || !email || !department || !position || !address) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check for existing employeeId or phone
+    const existingEmployeeId = await User.findOne({ employeeId });
+    if (existingEmployeeId) {
+      return res.status(400).json({ message: "Employee ID already exists" });
+    }
+
+    const existingPhone = await User.findOne({ phone });
+    if (existingPhone) {
+      return res.status(400).json({ message: "Phone number already exists" });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create employee request (not verified yet)
+    const newEmployee = new User({
+      name,
+      phone,
+      password: hashedPassword,
+      role: "EMPLOYEE",
+      employeeId,
+      email,
+      verified: false,
+      joinDate: Date.now(),
+      department,
+      address,
+      position,
+      status: "PENDING", // waiting for admin approval
+      createdBy: vendor._id, // store vendor id
+    });
+
+    await newEmployee.save();
+
+    res.status(201).json({
+      message: "Employee request submitted. Waiting for admin approval.",
+      employee: newEmployee,
+    });
+  } catch (error) {
+    console.error("Error creating employee by vendor:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 exports.deleteEmployee = async (req, res) => {
   try {
     const employeeId = req.params.id;     
@@ -523,6 +576,69 @@ exports.getAdminEmployeeAppliedUsers = async (req, res) => {
     res.json({ success: true, appliedUsers });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+// controllers/adminController.js
+
+
+
+exports.updateEmployeeStatus = async (req, res) => {
+  try {
+    const { id } = req.params; // employee ID
+    const { status } = req.body; // "APPROVED" or "REJECTED"
+    const admin = req.user; // authenticated admin
+
+    const employee = await User.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    if (!["APPROVED", "REJECTED"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    employee.status = status;
+    employee.verified = status === "APPROVED";
+    employee.approvedBy = admin._id;
+
+    await employee.save();
+
+    res.json({
+      message: `Employee ${status.toLowerCase()} successfully.`,
+      employee,
+    });
+  } catch (error) {
+    console.error("Error updating employee status:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+// controllers/adminController.js
+
+
+// ✅ Get all vendor-created employees pending approval
+exports.getPendingEmployees = async (req, res) => {
+  try {
+    // Find employees created by vendors with status PENDING
+    const pendingEmployees = await User.find({
+      role: "EMPLOYEE",
+      status: "PENDING",
+      createdBy: { $ne: null }, // ensure created by someone (vendor)
+    })
+      .populate("createdBy", "name phone vendorId email") // show vendor details
+      .sort({ joinDate: -1 }); // latest first
+
+    if (!pendingEmployees.length) {
+      return res.status(200).json({ message: "No pending employees found", employees: [] });
+    }
+
+    res.status(200).json({
+      message: "Pending employee approval list fetched successfully",
+      count: pendingEmployees.length,
+      employees: pendingEmployees,
+    });
+  } catch (error) {
+    console.error("Error fetching pending employees:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
