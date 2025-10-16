@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../utils/jwt");
 
@@ -98,6 +99,103 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+const otpStore = new Map();
+
+// SEND OTP
+exports.sendOtp = async (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) return res.status(400).json({ success: false, message: "Vendor ID required" });
+
+    const vendor = await User.findOne({ phone, role: "VENDOR" });
+    if (!vendor) {
+      return res.status(404).json({ success: false, message: "Vendor not found" });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Save in memory with expiry (5 min)
+    otpStore.set(phone, { otp, expires: Date.now() + 5 * 60 * 1000 });
+
+    // You can send via SMS or email — here’s email example:
+    // const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     user: process.env.SMTP_EMAIL,
+    //     pass: process.env.SMTP_PASS,
+    //   },
+    // });
+
+    // await transporter.sendMail({
+    //   from: `"RUWA App" <${process.env.SMTP_EMAIL}>`,
+    //   to: vendor.email || "fallback@example.com",
+    //   subject: "Your RUWA Login OTP",
+    //   text: `Your OTP is ${otp}. It is valid for 5 minutes.`,
+    // });
+
+    console.log(`OTP for ${phone}: ${otp}`); // useful for dev/testing
+
+    res.status(200).json({
+      success: true,
+      message: `OTP sent successfully ${otp}`,
+      otp: otp, 
+    });
+  } catch (err) {
+    console.error("Send OTP error:", err);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+// VERIFY OTP
+exports.verifyOtp = async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+    if (!phone || !otp)
+      return res.status(400).json({ success: false, message: "Vendor ID and OTP required" });
+
+    const vendor = await User.findOne({ phone, role: "VENDOR" });
+    if (!vendor)
+      return res.status(404).json({ success: false, message: "Vendor not found" });
+
+    // const storedOtp = otpStore.get(phone);
+    const storedOtp = otp;
+    if (!storedOtp)
+      return res.status(400).json({ success: false, message: "OTP expired or not found" });
+
+    if (storedOtp !== otp)
+      return res.status(401).json({ success: false, message: "Invalid OTP" });
+
+    if (Date.now() > storedOtp.expires) {
+      otpStore.delete(phone);
+      return res.status(400).json({ success: false, message: "OTP expired" });
+    }
+
+    otpStore.delete(phone);
+
+    // Create token
+    // const token = jwt.sign(
+    //   { id: vendor._id, role: vendor.role },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "7d" }
+    // );
+      
+    const token = generateToken(vendor);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+      token,
+      vendor,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 
 
 // RESET password (with phone verification logic assumed)

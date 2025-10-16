@@ -7,6 +7,8 @@ const {auth, authorizeRole} = require("../middlewares/auth"); // Make sure this 
 router.post("/register", ctrl.register);
 router.post("/admin/register" , ctrl.adminRegister);
 router.post("/login", ctrl.login);
+router.post("/send-otp", ctrl.sendOtp);
+router.post("/verify-otp", ctrl.verifyOtp);
 
 router.post("/reset", ctrl.resetPassword);
 router.get("/profile", auth, ctrl.getProfile);
