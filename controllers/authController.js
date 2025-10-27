@@ -42,10 +42,13 @@ exports.register = async (req, res) => {
 // LOGIN via password
 exports.login = async (req, res) => {
   try {
-    const { phone, employeeId, vendorId, password } = req.body;
+    const { phone, employeeId, vendorphone, password } = req.body;
 
-    if (!password || (!phone && !employeeId && !vendorId)) {
+    if ((!phone && !employeeId && !vendorphone)) {
       return res.status(400).json({ message: "Missing login credentials" });
+    }
+     if (!password && !vendorphone) {
+      return res.status(400).json({ message: "Password required for user/employee" });
     }
 
     // Find user by phone / employeeId / vendorId
@@ -54,8 +57,8 @@ exports.login = async (req, res) => {
       user = await User.findOne({ phone });
     } else if (employeeId) {
       user = await User.findOne({ employeeId });
-    } else if (vendorId) {
-      user = await User.findOne({ vendorId });
+    } else if (vendorphone) {
+      user = await User.findOne({phone:vendorphone });
     }
 
     if (!user) {
@@ -72,9 +75,11 @@ exports.login = async (req, res) => {
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Incorrect password" });
+  if (user.role !== "VENDOR") {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Incorrect password" });
+      }
     }
 
     // Generate token with role
